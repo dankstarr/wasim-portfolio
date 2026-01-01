@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import AnimatedText from '@/components/ui/AnimatedText'
-import MagneticButton from '@/components/ui/MagneticButton'
+import { MagneticButton } from '@/components/ui/MagneticButton'
 import { personalInfo } from '@/data/portfolio'
 
 // Dynamic import for Three.js scene to avoid SSR issues
@@ -49,44 +49,44 @@ export default function Hero() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 container mx-auto px-6 text-center"
+        className="relative z-10 container mx-auto px-4 md:px-6 text-center"
         style={{ y, opacity, scale }}
       >
         {/* Status badge */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8"
+          className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full glass mb-6 md:mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-sm text-text-secondary">Available for opportunities</span>
+          <span className="text-xs md:text-sm text-text-secondary">Available for opportunities</span>
         </motion.div>
 
         {/* Main heading */}
-        <div className="mb-6">
+        <div className="mb-4 md:mb-6">
           <AnimatedText
             text={personalInfo.name}
-            className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight"
+            className="text-4xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight"
             delay={0.3}
           />
         </div>
 
         {/* Title */}
         <motion.div
-          className="mb-8"
+          className="mb-6 md:mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <span className="text-2xl md:text-3xl lg:text-4xl gradient-text font-display font-semibold">
+          <span className="text-xl md:text-3xl lg:text-4xl gradient-text font-display font-semibold">
             {personalInfo.title}
           </span>
         </motion.div>
 
         {/* Description */}
         <motion.p
-          className="max-w-2xl mx-auto text-lg md:text-xl text-text-secondary mb-12"
+          className="max-w-2xl mx-auto text-sm md:text-lg lg:text-xl text-text-secondary mb-8 md:mb-12 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
@@ -97,13 +97,13 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
         >
           <MagneticButton
-            className="px-8 py-4 bg-accent text-white font-medium rounded-full hover:bg-accent-light transition-all glow"
+            className="px-6 md:px-8 py-3 md:py-4 bg-accent text-white font-medium rounded-full hover:bg-accent-light transition-all glow text-sm md:text-base"
             onClick={() => {
               const contactSection = document.getElementById('contact')
               if (contactSection) {
@@ -115,13 +115,13 @@ export default function Hero() {
           </MagneticButton>
 
           <MagneticButton
-            className="px-8 py-4 bg-transparent border border-white/20 text-white font-medium rounded-full hover:bg-white/5 transition-all group"
+            className="px-6 md:px-8 py-3 md:py-4 bg-transparent border border-white/20 text-white font-medium rounded-full hover:bg-white/5 transition-all text-sm md:text-base"
             onClick={() => window.open(personalInfo.github, '_blank')}
           >
             <span className="flex items-center gap-2">
               View GitHub
               <svg
-                className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                className="w-4 h-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -139,7 +139,7 @@ export default function Hero() {
 
         {/* Stats */}
         <motion.div
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8"
+          className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
@@ -151,10 +151,10 @@ export default function Hero() {
             { value: '95%', label: 'Client Satisfaction' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-3xl md:text-4xl font-display font-bold gradient-text">
+              <div className="text-2xl md:text-4xl font-display font-bold gradient-text">
                 {stat.value}
               </div>
-              <div className="text-sm text-text-secondary mt-1">{stat.label}</div>
+              <div className="text-xs md:text-sm text-text-secondary mt-1">{stat.label}</div>
             </div>
           ))}
         </motion.div>
@@ -162,21 +162,21 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer"
+        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 cursor-pointer"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}
         onClick={handleScrollToAbout}
       >
-        <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center pt-2">
+        <div className="w-5 h-8 md:w-6 md:h-10 rounded-full border-2 border-white/30 flex items-start justify-center pt-1.5 md:pt-2">
           <motion.div
-            className="w-1.5 h-1.5 bg-white rounded-full"
-            animate={{ y: [0, 16, 0] }}
+            className="w-1 h-1 md:w-1.5 md:h-1.5 bg-white rounded-full"
+            animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />
         </div>
       </motion.div>
 
-      {/* Social links */}
+      {/* Social links - hidden on mobile */}
       <motion.div
         className="absolute left-6 bottom-1/4 hidden lg:flex flex-col gap-4"
         initial={{ opacity: 0, x: -20 }}
@@ -206,7 +206,7 @@ export default function Hero() {
         <div className="w-px h-20 bg-white/20 mx-auto mt-4" />
       </motion.div>
 
-      {/* Email link */}
+      {/* Email link - hidden on mobile */}
       <motion.a
         href={`mailto:${personalInfo.email}`}
         className="absolute right-6 bottom-1/4 hidden lg:block text-text-secondary hover:text-accent transition-colors text-sm tracking-widest"

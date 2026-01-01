@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { navItems, personalInfo } from '@/data/portfolio'
-import MagneticButton from './MagneticButton'
+import { MagneticButton } from './MagneticButton'
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
