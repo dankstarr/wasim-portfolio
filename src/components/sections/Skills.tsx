@@ -1,10 +1,9 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from '@/hooks/useInView'
 import AnimatedText from '@/components/ui/AnimatedText'
-import { skills } from '@/data/portfolio'
 
 const allSkills = [
   { name: 'React', category: 'frameworks', level: 95, color: '#61DAFB' },
@@ -26,7 +25,7 @@ const allSkills = [
 ]
 
 const categories = [
-  { id: 'all', label: 'All Skills' },
+  { id: 'all', label: 'All' },
   { id: 'languages', label: 'Languages' },
   { id: 'frameworks', label: 'Frameworks' },
   { id: 'tools', label: 'Tools' },
@@ -42,9 +41,9 @@ export default function Skills() {
     : allSkills.filter((s) => s.category === activeCategory)
 
   return (
-    <section id="skills" className="relative py-32 overflow-hidden">
-      {/* Background orbs */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section id="skills" className="relative py-20 md:py-32 overflow-hidden">
+      {/* Background orbs - hidden on mobile for performance */}
+      <div className="absolute inset-0 overflow-hidden hidden md:block">
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
           animate={{
@@ -63,11 +62,11 @@ export default function Skills() {
         />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-16">
+        <div ref={titleRef} className="text-center mb-10 md:mb-16">
           <motion.span
-            className="text-accent font-mono text-sm tracking-wider uppercase mb-4 block"
+            className="text-accent font-mono text-xs md:text-sm tracking-wider uppercase mb-3 md:mb-4 block"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
@@ -76,13 +75,13 @@ export default function Skills() {
           </motion.span>
           <AnimatedText
             text="Skills & Technologies"
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold"
+            className="text-3xl md:text-5xl lg:text-6xl font-display font-bold"
           />
         </div>
 
         {/* Category Filter */}
         <motion.div
-          className="flex flex-wrap justify-center gap-2 mb-16"
+          className="flex flex-wrap justify-center gap-2 mb-8 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={titleInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3 }}
@@ -91,7 +90,7 @@ export default function Skills() {
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`px-6 py-2 rounded-full font-medium transition-all ${
+              className={`px-4 md:px-6 py-2 text-sm md:text-base rounded-full font-medium transition-all ${
                 activeCategory === category.id
                   ? 'bg-accent text-white'
                   : 'glass text-text-secondary hover:text-white'
@@ -103,9 +102,9 @@ export default function Skills() {
         </motion.div>
 
         {/* Skills Visualization */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Skill Orbs */}
-          <div className="relative h-[500px]">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* Skill Orbs - Hidden on mobile/tablet */}
+          <div className="relative h-[400px] hidden lg:block">
             <SkillOrbitVisualization
               skills={filteredSkills}
               hoveredSkill={hoveredSkill}
@@ -113,8 +112,8 @@ export default function Skills() {
             />
           </div>
 
-          {/* Skill List */}
-          <div className="space-y-4">
+          {/* Skill List - Full width on mobile */}
+          <div className="space-y-3 md:space-y-4 lg:col-span-1">
             <AnimatePresence mode="popLayout">
               {filteredSkills.map((skill, index) => (
                 <SkillBar
@@ -146,12 +145,18 @@ function SkillOrbitVisualization({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    if (containerRef.current) {
-      setDimensions({
-        width: containerRef.current.offsetWidth,
-        height: containerRef.current.offsetHeight,
-      })
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setDimensions({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        })
+      }
     }
+
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
+    return () => window.removeEventListener('resize', updateDimensions)
   }, [])
 
   const centerX = dimensions.width / 2
@@ -165,10 +170,10 @@ function SkillOrbitVisualization({
           key={ring}
           className="absolute rounded-full border border-white/10"
           style={{
-            width: ring * 140,
-            height: ring * 140,
-            left: centerX - (ring * 70),
-            top: centerY - (ring * 70),
+            width: ring * 120,
+            height: ring * 120,
+            left: centerX - (ring * 60),
+            top: centerY - (ring * 60),
           }}
           animate={{ rotate: ring % 2 === 0 ? 360 : -360 }}
           transition={{ duration: 60 + ring * 20, repeat: Infinity, ease: 'linear' }}
@@ -177,19 +182,19 @@ function SkillOrbitVisualization({
 
       {/* Center glow */}
       <div
-        className="absolute w-20 h-20 rounded-full bg-accent/30 blur-xl"
+        className="absolute w-16 h-16 rounded-full bg-accent/30 blur-xl"
         style={{
-          left: centerX - 40,
-          top: centerY - 40,
+          left: centerX - 32,
+          top: centerY - 32,
         }}
       />
 
       {/* Skill nodes */}
       {skills.map((skill, index) => {
         const angle = (index / skills.length) * Math.PI * 2
-        const radius = 100 + (index % 3) * 60
-        const x = centerX + Math.cos(angle) * radius - 30
-        const y = centerY + Math.sin(angle) * radius - 30
+        const radius = 80 + (index % 3) * 50
+        const x = centerX + Math.cos(angle) * radius - 28
+        const y = centerY + Math.sin(angle) * radius - 28
 
         return (
           <motion.div
@@ -207,28 +212,28 @@ function SkillOrbitVisualization({
             initial={{ opacity: 0, scale: 0 }}
             animate={{
               opacity: 1,
-              scale: hoveredSkill === skill.name ? 1.3 : 1,
+              scale: hoveredSkill === skill.name ? 1.2 : 1,
             }}
             transition={{ delay: index * 0.05, duration: 0.3 }}
             onMouseEnter={() => setHoveredSkill(skill.name)}
             onMouseLeave={() => setHoveredSkill(null)}
-            whileHover={{ scale: 1.3 }}
+            whileHover={{ scale: 1.2 }}
           >
-            <span className="text-xs font-bold text-white text-center leading-tight">
-              {skill.name.length > 6 ? skill.name.substring(0, 5) + '..' : skill.name}
+            <span className="text-[10px] font-bold text-white text-center leading-tight px-1">
+              {skill.name.length > 8 ? skill.name.substring(0, 6) + '..' : skill.name}
             </span>
 
             {/* Tooltip */}
             <AnimatePresence>
               {hoveredSkill === skill.name && (
                 <motion.div
-                  className="absolute -bottom-16 left-1/2 -translate-x-1/2 glass rounded-lg px-3 py-2 whitespace-nowrap z-30"
+                  className="absolute -bottom-14 left-1/2 -translate-x-1/2 glass rounded-lg px-3 py-2 whitespace-nowrap z-30"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="font-semibold text-white">{skill.name}</div>
-                  <div className="text-accent text-sm">{skill.level}% proficiency</div>
+                  <div className="font-semibold text-white text-sm">{skill.name}</div>
+                  <div className="text-accent text-xs">{skill.level}% proficiency</div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -242,7 +247,7 @@ function SkillOrbitVisualization({
           {skills.map((skill, index) => {
             if (skill.name !== hoveredSkill) return null
             const angle = (index / skills.length) * Math.PI * 2
-            const radius = 100 + (index % 3) * 60
+            const radius = 80 + (index % 3) * 50
             const x = centerX + Math.cos(angle) * radius
             const y = centerY + Math.sin(angle) * radius
 
@@ -283,28 +288,28 @@ function SkillBar({
   return (
     <motion.div
       ref={ref}
-      className={`glass rounded-xl p-4 transition-all cursor-pointer ${
+      className={`glass rounded-xl p-3 md:p-4 transition-all cursor-pointer ${
         isHovered ? 'ring-2 ring-accent' : ''
       }`}
-      initial={{ opacity: 0, x: 50 }}
+      initial={{ opacity: 0, x: 30 }}
       animate={inView ? { opacity: 1, x: 0 } : {}}
-      exit={{ opacity: 0, x: -50 }}
-      transition={{ delay: index * 0.05 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ delay: index * 0.03 }}
       onMouseEnter={() => onHover(skill.name)}
       onMouseLeave={() => onHover(null)}
       layout
     >
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <div
-            className="w-3 h-3 rounded-full"
+            className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0"
             style={{ backgroundColor: skill.color }}
           />
-          <span className="font-medium text-white">{skill.name}</span>
+          <span className="font-medium text-white text-sm md:text-base">{skill.name}</span>
         </div>
-        <span className="text-accent font-mono text-sm">{skill.level}%</span>
+        <span className="text-accent font-mono text-xs md:text-sm">{skill.level}%</span>
       </div>
-      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+      <div className="h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{
@@ -312,7 +317,7 @@ function SkillBar({
           }}
           initial={{ width: 0 }}
           animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
-          transition={{ duration: 1, delay: index * 0.05, ease: 'easeOut' }}
+          transition={{ duration: 0.8, delay: index * 0.03, ease: 'easeOut' }}
         />
       </div>
     </motion.div>
