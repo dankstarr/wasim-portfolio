@@ -73,7 +73,7 @@ export default function Vibes() {
   const featuredTracks = vinylCollection.slice(0, 5)
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-[#060609]">
+    <section className="relative h-screen min-h-[600px] w-full overflow-hidden bg-[#060609]">
       {/* Three.js Canvas */}
       <div className="absolute inset-0">
         <Canvas
@@ -106,17 +106,17 @@ export default function Vibes() {
       </div>
 
       {/* Overlay Controls - Centered */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative flex flex-col items-center pointer-events-auto">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-4">
+        <div className="relative flex flex-col items-center pointer-events-auto w-full max-w-md">
           {/* Play/Pause Button */}
           <motion.button
             onClick={togglePlayPause}
-            className="w-24 h-24 rounded-full flex items-center justify-center backdrop-blur-md transition-all border-2"
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center backdrop-blur-md transition-all border-2"
             style={{
               backgroundColor: `${currentVinyl.color}15`,
               borderColor: `${currentVinyl.color}50`,
               boxShadow: isPlaying
-                ? `0 0 60px ${currentVinyl.color}50, inset 0 0 30px ${currentVinyl.color}20`
+                ? `0 0 40px ${currentVinyl.color}50, inset 0 0 20px ${currentVinyl.color}20`
                 : `0 0 20px ${currentVinyl.color}20`,
             }}
             whileHover={{ scale: 1.08, boxShadow: `0 0 80px ${currentVinyl.color}60` }}
@@ -129,7 +129,7 @@ export default function Vibes() {
               {isPlaying ? (
                 <motion.svg
                   key="pause"
-                  className="w-10 h-10 text-white"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   initial={{ scale: 0, rotate: -90 }}
@@ -143,7 +143,7 @@ export default function Vibes() {
               ) : (
                 <motion.svg
                   key="play"
-                  className="w-10 h-10 text-white ml-1"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white ml-0.5 sm:ml-1"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   initial={{ scale: 0, rotate: 90 }}
@@ -161,41 +161,39 @@ export default function Vibes() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentVinyl.id}
-              className="mt-8 text-center"
+              className="mt-4 sm:mt-6 md:mt-8 text-center px-2"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-2xl md:text-3xl font-display font-bold text-white">
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-display font-bold text-white">
                 {currentVinyl.title}
               </h3>
-              <p className="text-text-secondary text-base mt-1">
+              <p className="text-text-secondary text-sm sm:text-base mt-0.5 sm:mt-1">
                 {currentVinyl.artist}
               </p>
             </motion.div>
           </AnimatePresence>
 
           {/* Transport Controls */}
-          <div className="flex items-center gap-6 mt-6">
+          <div className="flex items-center gap-4 sm:gap-6 mt-4 sm:mt-6">
             <motion.button
               onClick={playPrev}
-              className="w-12 h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10"
-              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10 active:bg-white/20"
               whileTap={{ scale: 0.9 }}
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
               </svg>
             </motion.button>
 
             <motion.button
               onClick={playNext}
-              className="w-12 h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10"
-              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10 active:bg-white/20"
               whileTap={{ scale: 0.9 }}
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
               </svg>
             </motion.button>
@@ -204,7 +202,7 @@ export default function Vibes() {
           {/* Feel Lucky Button */}
           <motion.button
             onClick={feelLucky}
-            className="mt-6 px-6 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 transition-all"
+            className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2 transition-all"
             style={{
               background: `linear-gradient(135deg, ${currentVinyl.color}40, ${currentVinyl.color}20)`,
               border: `1px solid ${currentVinyl.color}60`,
@@ -215,19 +213,19 @@ export default function Vibes() {
             }}
             whileTap={{ scale: 0.95 }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
             <span className="text-white">Feel Lucky</span>
           </motion.button>
 
           {/* Featured Tracks */}
-          <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-lg px-4">
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 px-2">
             {featuredTracks.map((vinyl) => (
               <motion.button
                 key={vinyl.id}
                 onClick={() => changeTrack(vinyl, true)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium transition-all flex items-center gap-1 sm:gap-1.5 ${
                   currentVinyl.id === vinyl.id
                     ? 'text-white'
                     : 'text-text-secondary hover:text-white'
@@ -241,11 +239,10 @@ export default function Vibes() {
                     ? `${vinyl.color}80`
                     : 'rgba(255,255,255,0.1)',
                 }}
-                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {currentVinyl.id === vinyl.id && isPlaying && (
-                  <span className="flex items-end gap-0.5 h-3">
+                  <span className="flex items-end gap-0.5 h-2.5 sm:h-3">
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         key={i}
@@ -261,22 +258,22 @@ export default function Vibes() {
                     ))}
                   </span>
                 )}
-                <span>{vinyl.artist}</span>
+                <span className="truncate max-w-[60px] sm:max-w-none">{vinyl.artist}</span>
               </motion.button>
             ))}
           </div>
 
           {/* Track counter */}
-          <p className="text-text-secondary/40 text-xs mt-4 font-mono">
+          <p className="text-text-secondary/40 text-[10px] sm:text-xs mt-3 sm:mt-4 font-mono">
             {vinylCollection.findIndex(v => v.id === currentVinyl.id) + 1} / {vinylCollection.length} tracks
           </p>
         </div>
       </div>
 
       {/* Section Label */}
-      <div className="absolute top-8 inset-x-0 z-10 flex justify-center pointer-events-none">
+      <div className="absolute top-4 sm:top-8 inset-x-0 z-10 flex justify-center pointer-events-none">
         <motion.p
-          className="text-text-secondary/30 text-xs font-mono tracking-widest uppercase"
+          className="text-text-secondary/30 text-[10px] sm:text-xs font-mono tracking-widest uppercase"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -286,8 +283,8 @@ export default function Vibes() {
       </div>
 
       {/* Gradient overlays */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#060609] to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#060609] to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-20 sm:h-32 bg-gradient-to-b from-[#060609] to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-20 sm:h-32 bg-gradient-to-t from-[#060609] to-transparent pointer-events-none" />
     </section>
   )
 }
