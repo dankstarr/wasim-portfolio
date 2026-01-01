@@ -36,13 +36,11 @@ export default function Vibes() {
 
   // Play/pause toggle
   const togglePlayPause = useCallback(() => {
-    if (!playerRef.current) return
-
     if (isPlaying) {
-      playerRef.current.pauseVideo()
+      playerRef.current?.pauseVideo()
       setIsPlaying(false)
     } else {
-      playerRef.current.playVideo()
+      playerRef.current?.playVideo()
       setIsPlaying(true)
     }
   }, [isPlaying])
@@ -79,8 +77,8 @@ export default function Vibes() {
 
   // Auto-play when player is ready and isPlaying is true
   useEffect(() => {
-    if (isReady && isPlaying && playerRef.current) {
-      playerRef.current.playVideo()
+    if (isReady && isPlaying) {
+      playerRef.current?.playVideo()
     }
   }, [isReady, isPlaying])
 
