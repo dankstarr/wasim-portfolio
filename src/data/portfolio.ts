@@ -5,7 +5,7 @@ export const personalInfo = {
   phone: '+91 9820769479',
   location: 'Bangalore, India',
   github: 'https://github.com/eth-jashan',
-  linkedin: 'https://linkedin.com/in/jashanshetty',
+  linkedin: 'https://www.linkedin.com/in/jashan-shetty-aa1501141/',
   bio: 'Results-driven Full Stack Developer with 4 years of professional experience crafting robust web and mobile applications using React, React Native, and Node.js.',
   summary: [
     'Architecting and implementing scalable solutions that have improved application performance by 40%',
