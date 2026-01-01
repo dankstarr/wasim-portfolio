@@ -1,481 +1,472 @@
 'use client'
 
-import { useRef, useMemo, useState, useCallback } from 'react'
-import { Canvas, useFrame, ThreeEvent } from '@react-three/fiber'
-import { Float, Text, Box, RoundedBox } from '@react-three/drei'
+import { useRef, useState, useCallback } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrthographicCamera } from '@react-three/drei'
 import * as THREE from 'three'
 
-// Voxel/Pixel style helper
-function Voxel({
+// Simple box component for building pixel art
+function Block({
   position,
+  size = [1, 1, 1],
   color,
-  scale = 1,
   emissive,
-  emissiveIntensity = 0
+  emissiveIntensity = 0,
 }: {
   position: [number, number, number]
+  size?: [number, number, number]
   color: string
-  scale?: number
   emissive?: string
   emissiveIntensity?: number
 }) {
   return (
-    <Box position={position} args={[scale * 0.9, scale * 0.9, scale * 0.9]}>
+    <mesh position={position}>
+      <boxGeometry args={size} />
       <meshStandardMaterial
         color={color}
         emissive={emissive || color}
         emissiveIntensity={emissiveIntensity}
       />
-    </Box>
+    </mesh>
   )
 }
 
-// Pixelated Coder Character
-function PixelCoder() {
-  const groupRef = useRef<THREE.Group>(null)
-  const [headBob, setHeadBob] = useState(0)
-  const [typing, setTyping] = useState(0)
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
-    // Head bobbing to the beat
-    setHeadBob(Math.sin(t * 3) * 0.05)
-    // Typing animation
-    setTyping(Math.sin(t * 8) * 0.03)
-  })
-
-  // Pixel art person sitting at desk
-  const skinColor = '#f5d0c5'
-  const hairColor = '#1a1a2e'
-  const shirtColor = '#8b5cf6'
-  const pantsColor = '#1a1a2e'
-  const deskColor = '#2d2d44'
-  const screenColor = '#0f0f1a'
-  const screenGlow = '#8b5cf6'
+// Room structure - walls and floor
+function Room() {
+  const floorColor = '#1a1a2e'
+  const wallColor = '#12121f'
+  const accentWall = '#0f0f1a'
 
   return (
-    <group ref={groupRef} position={[-4, -1.5, 0]} scale={0.4}>
-      {/* Chair */}
-      <Voxel position={[0, 0, 0]} color="#1a1a2e" />
-      <Voxel position={[0, 1, 0]} color="#1a1a2e" />
-      <Voxel position={[0, 2, -0.5]} color="#1a1a2e" />
-      <Voxel position={[0, 3, -0.5]} color="#1a1a2e" />
-      <Voxel position={[0, 4, -0.5]} color="#1a1a2e" />
+    <group>
+      {/* Floor */}
+      <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[12, 12]} />
+        <meshStandardMaterial color={floorColor} />
+      </mesh>
 
-      {/* Body - Torso */}
-      <Voxel position={[0, 2, 0]} color={shirtColor} emissiveIntensity={0.2} />
-      <Voxel position={[0, 3, 0]} color={shirtColor} emissiveIntensity={0.2} />
-      <Voxel position={[0, 4, 0]} color={shirtColor} emissiveIntensity={0.2} />
+      {/* Back wall */}
+      <mesh position={[0, 3, -6]}>
+        <planeGeometry args={[12, 6]} />
+        <meshStandardMaterial color={wallColor} />
+      </mesh>
 
-      {/* Legs */}
-      <Voxel position={[-0.5, 1, 0.5]} color={pantsColor} />
-      <Voxel position={[0.5, 1, 0.5]} color={pantsColor} />
-      <Voxel position={[-0.5, 0, 0.5]} color={pantsColor} />
-      <Voxel position={[0.5, 0, 0.5]} color={pantsColor} />
+      {/* Left wall */}
+      <mesh position={[-6, 3, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[12, 6]} />
+        <meshStandardMaterial color={accentWall} />
+      </mesh>
 
-      {/* Head */}
-      <group position={[0, headBob, 0]}>
-        <Voxel position={[0, 5, 0]} color={skinColor} />
-        <Voxel position={[0, 6, 0]} color={skinColor} />
-        {/* Hair */}
-        <Voxel position={[0, 7, 0]} color={hairColor} />
-        <Voxel position={[0, 6, -0.5]} color={hairColor} />
-        <Voxel position={[-0.5, 6, 0]} color={hairColor} />
-        <Voxel position={[0.5, 6, 0]} color={hairColor} />
-        {/* Headphones */}
-        <Voxel position={[-1, 5.5, 0]} color="#8b5cf6" scale={0.6} emissiveIntensity={0.5} />
-        <Voxel position={[1, 5.5, 0]} color="#8b5cf6" scale={0.6} emissiveIntensity={0.5} />
-        <Voxel position={[0, 7.2, 0]} color="#4a4a6a" scale={0.5} />
-      </group>
-
-      {/* Arms - typing animation */}
-      <group position={[0, typing, 0]}>
-        <Voxel position={[-1, 3.5, 0.5]} color={shirtColor} emissiveIntensity={0.2} />
-        <Voxel position={[1, 3.5, 0.5]} color={shirtColor} emissiveIntensity={0.2} />
-        <Voxel position={[-1.5, 3, 1]} color={skinColor} />
-        <Voxel position={[1.5, 3, 1]} color={skinColor} />
-      </group>
-
-      {/* Desk */}
-      <Voxel position={[0, 2.5, 2]} color={deskColor} scale={3} />
-      <Voxel position={[-2, 2.5, 2]} color={deskColor} />
-      <Voxel position={[2, 2.5, 2]} color={deskColor} />
-
-      {/* Desk legs */}
-      <Voxel position={[-2, 1.5, 2]} color={deskColor} scale={0.5} />
-      <Voxel position={[-2, 0.5, 2]} color={deskColor} scale={0.5} />
-      <Voxel position={[2, 1.5, 2]} color={deskColor} scale={0.5} />
-      <Voxel position={[2, 0.5, 2]} color={deskColor} scale={0.5} />
-
-      {/* Monitor */}
-      <Voxel position={[0, 4.5, 2]} color="#2d2d44" scale={2.5} />
-      <Voxel position={[0, 5.5, 2]} color="#2d2d44" scale={2.5} />
-      <Voxel position={[0, 6.5, 2]} color="#2d2d44" scale={2.5} />
-
-      {/* Screen glow */}
-      <Box position={[0, 5.5, 1.7]} args={[2, 2, 0.1]}>
-        <meshStandardMaterial
-          color={screenColor}
-          emissive={screenGlow}
-          emissiveIntensity={0.8}
-        />
-      </Box>
-
-      {/* Code lines on screen */}
-      <CodeLines position={[0, 5.5, 1.6]} />
-
-      {/* Coffee mug */}
-      <Voxel position={[2.5, 3.2, 1.5]} color="#1a1a2e" scale={0.6} />
-      <Voxel position={[2.5, 3.6, 1.5]} color="#1a1a2e" scale={0.6} />
-      {/* Coffee */}
-      <Voxel position={[2.5, 3.8, 1.5]} color="#3d2817" scale={0.5} />
-      {/* Steam */}
-      <CoffeeSteam position={[2.5, 4.2, 1.5]} />
+      {/* Accent strip on wall */}
+      <Block position={[0, 5.5, -5.9]} size={[10, 0.3, 0.1]} color="#8b5cf6" emissiveIntensity={0.3} />
     </group>
   )
 }
 
-// Animated code lines on screen
-function CodeLines({ position }: { position: [number, number, number] }) {
-  const linesRef = useRef<THREE.Group>(null)
+// Desk with monitor setup
+function DeskSetup() {
+  const screenRef = useRef<THREE.Mesh>(null)
 
   useFrame(({ clock }) => {
-    if (linesRef.current) {
-      linesRef.current.children.forEach((child, i) => {
+    if (screenRef.current) {
+      const material = screenRef.current.material as THREE.MeshStandardMaterial
+      material.emissiveIntensity = 0.5 + Math.sin(clock.getElapsedTime() * 2) * 0.2
+    }
+  })
+
+  return (
+    <group position={[-2, 0, -3]}>
+      {/* Desk */}
+      <Block position={[0, 1.2, 0]} size={[4, 0.15, 2]} color="#2d2d44" />
+      {/* Desk legs */}
+      <Block position={[-1.8, 0.6, -0.8]} size={[0.15, 1.2, 0.15]} color="#1f1f35" />
+      <Block position={[1.8, 0.6, -0.8]} size={[0.15, 1.2, 0.15]} color="#1f1f35" />
+      <Block position={[-1.8, 0.6, 0.8]} size={[0.15, 1.2, 0.15]} color="#1f1f35" />
+      <Block position={[1.8, 0.6, 0.8]} size={[0.15, 1.2, 0.15]} color="#1f1f35" />
+
+      {/* Monitor stand */}
+      <Block position={[0, 1.5, -0.5]} size={[0.8, 0.5, 0.3]} color="#1a1a2e" />
+      <Block position={[0, 1.3, -0.3]} size={[0.4, 0.1, 0.4]} color="#1a1a2e" />
+
+      {/* Monitor frame */}
+      <Block position={[0, 2.5, -0.6]} size={[2.8, 1.8, 0.15]} color="#1a1a2e" />
+
+      {/* Monitor screen */}
+      <mesh ref={screenRef} position={[0, 2.5, -0.5]}>
+        <boxGeometry args={[2.5, 1.5, 0.05]} />
+        <meshStandardMaterial
+          color="#0a0a15"
+          emissive="#8b5cf6"
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+
+      {/* Code lines on screen */}
+      <CodeLines position={[0, 2.5, -0.45]} />
+
+      {/* Keyboard */}
+      <Block position={[0, 1.35, 0.3]} size={[1.5, 0.08, 0.5]} color="#1a1a2e" />
+      {/* Keys glow */}
+      <Block position={[0, 1.4, 0.3]} size={[1.3, 0.02, 0.35]} color="#8b5cf6" emissiveIntensity={0.2} />
+
+      {/* Mouse */}
+      <Block position={[1.2, 1.35, 0.4]} size={[0.25, 0.1, 0.4]} color="#1a1a2e" />
+
+      {/* Coffee mug */}
+      <group position={[1.5, 1.35, -0.3]}>
+        <Block position={[0, 0.15, 0]} size={[0.3, 0.35, 0.3]} color="#1f1f35" />
+        <Block position={[0.2, 0.15, 0]} size={[0.1, 0.2, 0.15]} color="#1f1f35" />
+        {/* Coffee */}
+        <Block position={[0, 0.28, 0]} size={[0.22, 0.08, 0.22]} color="#3d2817" />
+        {/* Steam */}
+        <Steam position={[0, 0.45, 0]} />
+      </group>
+    </group>
+  )
+}
+
+// Animated code lines
+function CodeLines({ position }: { position: [number, number, number] }) {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.children.forEach((child, i) => {
         const mesh = child as THREE.Mesh
         const material = mesh.material as THREE.MeshStandardMaterial
-        const pulse = Math.sin(clock.getElapsedTime() * 2 + i * 0.5) * 0.3 + 0.7
-        material.emissiveIntensity = pulse
+        material.emissiveIntensity = 0.5 + Math.sin(clock.getElapsedTime() * 3 + i) * 0.3
+      })
+    }
+  })
+
+  const lines = [
+    { width: 0.8, x: -0.6 },
+    { width: 1.2, x: -0.4 },
+    { width: 0.6, x: -0.7 },
+    { width: 1.0, x: -0.5 },
+    { width: 0.9, x: -0.55 },
+  ]
+
+  return (
+    <group ref={groupRef} position={position}>
+      {lines.map((line, i) => (
+        <mesh key={i} position={[line.x, 0.4 - i * 0.2, 0]}>
+          <boxGeometry args={[line.width, 0.06, 0.01]} />
+          <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.5} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+// Steam effect
+function Steam({ position }: { position: [number, number, number] }) {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.children.forEach((child, i) => {
+        child.position.y = 0.1 + ((clock.getElapsedTime() * 0.3 + i * 0.3) % 0.5)
+        child.position.x = Math.sin(clock.getElapsedTime() * 2 + i) * 0.05
+        const mesh = child as THREE.Mesh
+        const material = mesh.material as THREE.MeshStandardMaterial
+        material.opacity = 0.6 - child.position.y
       })
     }
   })
 
   return (
-    <group ref={linesRef} position={position}>
-      {[0.6, 0.3, 0, -0.3, -0.6].map((y, i) => (
-        <Box key={i} position={[-0.3, y, 0]} args={[0.8 + Math.random() * 0.5, 0.08, 0.01]}>
-          <meshStandardMaterial
-            color="#8b5cf6"
-            emissive="#8b5cf6"
-            emissiveIntensity={0.5}
-          />
-        </Box>
+    <group ref={groupRef} position={position}>
+      {[0, 1, 2].map((i) => (
+        <mesh key={i} position={[0, 0.1 + i * 0.15, 0]}>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#ffffff" transparent opacity={0.4} />
+        </mesh>
       ))}
     </group>
   )
 }
 
-// Coffee steam particles
-function CoffeeSteam({ position }: { position: [number, number, number] }) {
-  const particlesRef = useRef<THREE.Points>(null)
-  const count = 20
-
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 0.2
-      pos[i * 3 + 1] = Math.random() * 0.8
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.2
-    }
-    return pos
-  }, [])
+// Pixel character sitting
+function Character() {
+  const groupRef = useRef<THREE.Group>(null)
+  const [headBob, setHeadBob] = useState(0)
 
   useFrame(({ clock }) => {
-    if (!particlesRef.current) return
-    const posAttr = particlesRef.current.geometry.attributes.position
-    const arr = posAttr.array as Float32Array
-
-    for (let i = 0; i < count; i++) {
-      arr[i * 3 + 1] += 0.01
-      arr[i * 3] += Math.sin(clock.getElapsedTime() + i) * 0.002
-      if (arr[i * 3 + 1] > 1) {
-        arr[i * 3 + 1] = 0
-        arr[i * 3] = (Math.random() - 0.5) * 0.2
-      }
-    }
-    posAttr.needsUpdate = true
+    setHeadBob(Math.sin(clock.getElapsedTime() * 2) * 0.03)
   })
 
+  const skin = '#f5d0c5'
+  const hair = '#1a1a2e'
+  const shirt = '#8b5cf6'
+  const pants = '#1f1f35'
+
   return (
-    <points ref={particlesRef} position={position}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial size={0.05} color="#ffffff" transparent opacity={0.4} />
-    </points>
+    <group ref={groupRef} position={[-2, 0, -1.8]} scale={0.35}>
+      {/* Chair */}
+      <Block position={[0, 1.5, 0]} size={[1.2, 0.2, 1.2]} color="#2d2d44" />
+      <Block position={[0, 2.5, -0.5]} size={[1.2, 2, 0.2]} color="#2d2d44" />
+      <Block position={[0, 0.7, 0]} size={[0.2, 1.4, 0.2]} color="#1f1f35" />
+
+      {/* Legs */}
+      <Block position={[-0.25, 2, 0.8]} size={[0.4, 0.8, 0.4]} color={pants} />
+      <Block position={[0.25, 2, 0.8]} size={[0.4, 0.8, 0.4]} color={pants} />
+
+      {/* Body */}
+      <Block position={[0, 2.8, 0]} size={[0.9, 1, 0.6]} color={shirt} emissiveIntensity={0.1} />
+      <Block position={[0, 3.4, 0]} size={[0.7, 0.5, 0.5]} color={shirt} emissiveIntensity={0.1} />
+
+      {/* Arms */}
+      <Block position={[-0.6, 2.8, 0.4]} size={[0.35, 0.8, 0.35]} color={shirt} emissiveIntensity={0.1} />
+      <Block position={[0.6, 2.8, 0.4]} size={[0.35, 0.8, 0.35]} color={shirt} emissiveIntensity={0.1} />
+      <Block position={[-0.6, 2.4, 0.7]} size={[0.3, 0.3, 0.3]} color={skin} />
+      <Block position={[0.6, 2.4, 0.7]} size={[0.3, 0.3, 0.3]} color={skin} />
+
+      {/* Head */}
+      <group position={[0, headBob, 0]}>
+        <Block position={[0, 4, 0]} size={[0.7, 0.8, 0.7]} color={skin} />
+        {/* Hair */}
+        <Block position={[0, 4.5, -0.1]} size={[0.75, 0.4, 0.6]} color={hair} />
+        <Block position={[0, 4.2, -0.35]} size={[0.7, 0.6, 0.2]} color={hair} />
+        {/* Headphones */}
+        <Block position={[-0.45, 4, 0]} size={[0.15, 0.4, 0.4]} color="#8b5cf6" emissiveIntensity={0.3} />
+        <Block position={[0.45, 4, 0]} size={[0.15, 0.4, 0.4]} color="#8b5cf6" emissiveIntensity={0.3} />
+        <Block position={[0, 4.55, 0]} size={[0.6, 0.1, 0.3]} color="#4a4a6a" />
+      </group>
+    </group>
   )
 }
 
-// Interactive Jukebox
-function Jukebox({ onPlay }: { onPlay: () => void }) {
-  const groupRef = useRef<THREE.Group>(null)
-  const [hovered, setHovered] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
+// Vinyl/Record player setup
+function VinylPlayer({ onPlay, isPlaying }: { onPlay: () => void; isPlaying: boolean }) {
   const discRef = useRef<THREE.Mesh>(null)
+  const [hovered, setHovered] = useState(false)
 
   useFrame(({ clock }) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.1
-    }
     if (discRef.current && isPlaying) {
-      discRef.current.rotation.z += 0.02
+      discRef.current.rotation.y += 0.02
     }
   })
 
-  const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation()
-    setIsPlaying(true)
-    onPlay()
-  }, [onPlay])
-
-  const bodyColor = '#1a1a2e'
-  const accentColor = '#8b5cf6'
-  const glowIntensity = hovered ? 0.8 : 0.3
-
   return (
     <group
-      ref={groupRef}
-      position={[4.5, -0.5, 0]}
-      scale={0.5}
+      position={[2.5, 0, -2]}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
+      onClick={(e) => {
+        e.stopPropagation()
+        onPlay()
+      }}
     >
-      {/* Jukebox body */}
-      <RoundedBox args={[3, 5, 2]} radius={0.2} position={[0, 2, 0]}>
-        <meshStandardMaterial color={bodyColor} metalness={0.8} roughness={0.2} />
-      </RoundedBox>
+      {/* Table/Stand */}
+      <Block position={[0, 0.9, 0]} size={[2.2, 0.15, 1.8]} color="#2d2d44" />
+      <Block position={[-0.9, 0.45, -0.7]} size={[0.15, 0.9, 0.15]} color="#1f1f35" />
+      <Block position={[0.9, 0.45, -0.7]} size={[0.15, 0.9, 0.15]} color="#1f1f35" />
+      <Block position={[-0.9, 0.45, 0.7]} size={[0.15, 0.9, 0.15]} color="#1f1f35" />
+      <Block position={[0.9, 0.45, 0.7]} size={[0.15, 0.9, 0.15]} color="#1f1f35" />
 
-      {/* Top arch */}
-      <RoundedBox args={[3.2, 1.5, 2.2]} radius={0.3} position={[0, 5, 0]}>
+      {/* Turntable base */}
+      <Block position={[0, 1.1, 0]} size={[2, 0.2, 1.6]} color="#1a1a2e" />
+
+      {/* Platter */}
+      <mesh position={[-0.3, 1.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.55, 0.55, 0.05, 32]} />
+        <meshStandardMaterial color="#0f0f1a" metalness={0.8} roughness={0.2} />
+      </mesh>
+
+      {/* Vinyl record */}
+      <mesh ref={discRef} position={[-0.3, 1.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.5, 0.5, 0.02, 32]} />
         <meshStandardMaterial
-          color={accentColor}
-          emissive={accentColor}
-          emissiveIntensity={glowIntensity}
+          color="#0a0a0a"
+          emissive={isPlaying ? '#8b5cf6' : '#4a4a6a'}
+          emissiveIntensity={isPlaying ? 0.3 : 0.1}
           metalness={0.9}
           roughness={0.1}
         />
-      </RoundedBox>
+      </mesh>
 
-      {/* Display window */}
-      <RoundedBox args={[2.4, 2, 0.1]} radius={0.1} position={[0, 3, 1]}>
+      {/* Record label */}
+      <mesh position={[-0.3, 1.32, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.15, 0.15, 0.02, 32]} />
         <meshStandardMaterial
-          color="#0a0a15"
-          emissive={accentColor}
-          emissiveIntensity={0.2}
-        />
-      </RoundedBox>
-
-      {/* Vinyl disc */}
-      <mesh ref={discRef} position={[0, 3, 1.1]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[0.8, 0.8, 0.05, 32]} />
-        <meshStandardMaterial
-          color="#0a0a0a"
-          emissive={accentColor}
-          emissiveIntensity={isPlaying ? 0.3 : 0.1}
-          metalness={0.9}
+          color="#8b5cf6"
+          emissive="#8b5cf6"
+          emissiveIntensity={isPlaying ? 0.6 : 0.2}
         />
       </mesh>
 
-      {/* Disc label */}
-      <mesh position={[0, 3, 1.15]} rotation={[Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.25, 32]} />
-        <meshStandardMaterial
-          color={accentColor}
-          emissive={accentColor}
-          emissiveIntensity={isPlaying ? 0.8 : 0.3}
-        />
-      </mesh>
-
-      {/* Play button - Main interactive */}
-      <group position={[0, 0.8, 1.1]} onClick={handleClick}>
-        <mesh>
-          <cylinderGeometry args={[0.5, 0.5, 0.2, 32]} />
-          <meshStandardMaterial
-            color={isPlaying ? "#22c55e" : accentColor}
-            emissive={isPlaying ? "#22c55e" : accentColor}
-            emissiveIntensity={hovered ? 1 : 0.5}
-            metalness={0.8}
-          />
-        </mesh>
-        {/* Play triangle or pause bars */}
-        {!isPlaying ? (
-          <mesh position={[0.05, 0, 0.11]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-            <coneGeometry args={[0.2, 0.3, 3]} />
-            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.5} />
-          </mesh>
-        ) : (
-          <>
-            <Box position={[-0.08, 0, 0.11]} args={[0.08, 0.25, 0.02]}>
-              <meshStandardMaterial color="#ffffff" />
-            </Box>
-            <Box position={[0.08, 0, 0.11]} args={[0.08, 0.25, 0.02]}>
-              <meshStandardMaterial color="#ffffff" />
-            </Box>
-          </>
-        )}
+      {/* Tonearm */}
+      <group position={[0.6, 1.3, -0.4]} rotation={[0, isPlaying ? -0.3 : 0.2, 0]}>
+        <Block position={[0, 0.1, 0]} size={[0.08, 0.2, 0.08]} color="#4a4a6a" />
+        <Block position={[-0.3, 0.15, 0.1]} size={[0.6, 0.05, 0.05]} color="#4a4a6a" />
+        <Block position={[-0.55, 0.15, 0.1]} size={[0.1, 0.08, 0.06]} color="#8b5cf6" emissiveIntensity={0.3} />
       </group>
 
-      {/* Song selection buttons */}
-      {[-0.8, -0.4, 0, 0.4, 0.8].map((x, i) => (
-        <mesh key={i} position={[x, -0.2, 1.1]}>
-          <boxGeometry args={[0.25, 0.15, 0.1]} />
+      {/* Play indicator light */}
+      <mesh position={[0.7, 1.25, 0.5]}>
+        <sphereGeometry args={[0.05, 16, 16]} />
+        <meshStandardMaterial
+          color={isPlaying ? '#22c55e' : '#4a4a6a'}
+          emissive={isPlaying ? '#22c55e' : '#4a4a6a'}
+          emissiveIntensity={isPlaying ? 0.8 : 0.2}
+        />
+      </mesh>
+
+      {/* Hover/Click indicator */}
+      {hovered && !isPlaying && (
+        <mesh position={[-0.3, 1.8, 0]}>
+          <sphereGeometry args={[0.15, 16, 16]} />
           <meshStandardMaterial
-            color={i === 2 ? accentColor : '#2d2d44'}
-            emissive={i === 2 ? accentColor : '#2d2d44'}
-            emissiveIntensity={i === 2 ? 0.5 : 0.1}
+            color="#8b5cf6"
+            emissive="#8b5cf6"
+            emissiveIntensity={0.8}
+            transparent
+            opacity={0.8}
           />
         </mesh>
-      ))}
-
-      {/* Speaker grills */}
-      {[-0.8, 0.8].map((x, i) => (
-        <group key={i} position={[x, 1.8, 1]}>
-          {[0, 0.15, 0.3, 0.45].map((y, j) => (
-            <Box key={j} position={[0, y, 0]} args={[0.5, 0.08, 0.05]}>
-              <meshStandardMaterial color="#0a0a15" />
-            </Box>
-          ))}
-        </group>
-      ))}
-
-      {/* Neon trim lights */}
-      <NeonTrim position={[0, 0, 0]} isPlaying={isPlaying} />
-
-      {/* "CLICK TO PLAY" text */}
-      {!isPlaying && (
-        <Float speed={2} floatIntensity={0.3}>
-          <Text
-            position={[0, 6.5, 0]}
-            fontSize={0.3}
-            color="#ffffff"
-            anchorX="center"
-            anchorY="middle"
-          >
-            {hovered ? 'CLICK!' : 'PLAY'}
-          </Text>
-        </Float>
       )}
     </group>
   )
 }
 
-// Neon trim lights around jukebox
-function NeonTrim({ position, isPlaying }: { position: [number, number, number]; isPlaying: boolean }) {
-  const lightsRef = useRef<THREE.Group>(null)
-
-  useFrame(({ clock }) => {
-    if (!lightsRef.current || !isPlaying) return
-    lightsRef.current.children.forEach((child, i) => {
-      const mesh = child as THREE.Mesh
-      const material = mesh.material as THREE.MeshStandardMaterial
-      const wave = Math.sin(clock.getElapsedTime() * 4 + i * 0.5) * 0.5 + 0.5
-      material.emissiveIntensity = wave
-    })
-  })
-
-  const lightPositions: [number, number, number][] = [
-    [-1.5, 4.5, 1], [-1.5, 3.5, 1], [-1.5, 2.5, 1], [-1.5, 1.5, 1],
-    [1.5, 4.5, 1], [1.5, 3.5, 1], [1.5, 2.5, 1], [1.5, 1.5, 1],
-  ]
-
+// Speakers
+function Speakers() {
   return (
-    <group ref={lightsRef} position={position}>
-      {lightPositions.map((pos, i) => (
-        <mesh key={i} position={pos}>
-          <sphereGeometry args={[0.08, 16, 16]} />
-          <meshStandardMaterial
-            color="#8b5cf6"
-            emissive="#8b5cf6"
-            emissiveIntensity={isPlaying ? 0.8 : 0.3}
-          />
+    <group>
+      {/* Left speaker */}
+      <group position={[-4.5, 0, -4]}>
+        <Block position={[0, 0.8, 0]} size={[0.8, 1.6, 0.6]} color="#1a1a2e" />
+        <mesh position={[0, 1.1, 0.31]}>
+          <circleGeometry args={[0.25, 16]} />
+          <meshStandardMaterial color="#0a0a0a" />
         </mesh>
-      ))}
-    </group>
-  )
-}
-
-// Audio visualizer bars (simplified, responding to "music")
-function AudioBars({ isPlaying }: { isPlaying: boolean }) {
-  const barsRef = useRef<THREE.Group>(null)
-  const barCount = 16
-  const meshRefs = useRef<THREE.Mesh[]>([])
-
-  useFrame(({ clock }) => {
-    if (!isPlaying) return
-    const t = clock.getElapsedTime()
-
-    meshRefs.current.forEach((mesh, i) => {
-      if (mesh) {
-        const wave = Math.sin(t * 4 + i * 0.4) * 0.5 +
-                    Math.sin(t * 6 + i * 0.3) * 0.3 +
-                    Math.sin(t * 2 + i * 0.6) * 0.2
-        const height = 0.5 + Math.abs(wave) * 1.5
-        mesh.scale.y = height
-        mesh.position.y = -2.5 + height / 2
-
-        const material = mesh.material as THREE.MeshStandardMaterial
-        material.emissiveIntensity = 0.3 + Math.abs(wave) * 0.5
-      }
-    })
-  })
-
-  return (
-    <group ref={barsRef} position={[0, 0, -3]}>
-      {Array.from({ length: barCount }).map((_, i) => (
-        <mesh
-          key={i}
-          ref={(el) => { if (el) meshRefs.current[i] = el }}
-          position={[(i - barCount / 2) * 0.5, -2, 0]}
-        >
-          <boxGeometry args={[0.3, 1, 0.3]} />
-          <meshStandardMaterial
-            color="#8b5cf6"
-            emissive="#8b5cf6"
-            emissiveIntensity={0.3}
-          />
+        <mesh position={[0, 0.5, 0.31]}>
+          <circleGeometry args={[0.15, 16]} />
+          <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
         </mesh>
-      ))}
+      </group>
+
+      {/* Right speaker */}
+      <group position={[0.5, 0, -4]}>
+        <Block position={[0, 0.8, 0]} size={[0.8, 1.6, 0.6]} color="#1a1a2e" />
+        <mesh position={[0, 1.1, 0.31]}>
+          <circleGeometry args={[0.25, 16]} />
+          <meshStandardMaterial color="#0a0a0a" />
+        </mesh>
+        <mesh position={[0, 0.5, 0.31]}>
+          <circleGeometry args={[0.15, 16]} />
+          <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
+        </mesh>
+      </group>
     </group>
   )
 }
 
-// Floating music notes
-function MusicNotes({ isPlaying }: { isPlaying: boolean }) {
-  const notesRef = useRef<THREE.Group>(null)
+// Decorative plant
+function Plant({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      {/* Pot */}
+      <Block position={[0, 0.25, 0]} size={[0.4, 0.5, 0.4]} color="#4a3728" />
+      <Block position={[0, 0.55, 0]} size={[0.45, 0.1, 0.45]} color="#4a3728" />
+      {/* Soil */}
+      <Block position={[0, 0.52, 0]} size={[0.35, 0.05, 0.35]} color="#2d1f14" />
+      {/* Leaves */}
+      <Block position={[0, 0.8, 0]} size={[0.15, 0.4, 0.15]} color="#22c55e" emissiveIntensity={0.1} />
+      <Block position={[-0.15, 0.9, 0.1]} size={[0.25, 0.15, 0.08]} color="#22c55e" emissiveIntensity={0.1} />
+      <Block position={[0.15, 0.85, -0.1]} size={[0.25, 0.15, 0.08]} color="#22c55e" emissiveIntensity={0.1} />
+      <Block position={[0.1, 1, 0.12]} size={[0.2, 0.12, 0.06]} color="#16a34a" emissiveIntensity={0.1} />
+    </group>
+  )
+}
+
+// Wall poster
+function Poster({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <Block position={[0, 0, 0.05]} size={[1.2, 1.6, 0.05]} color="#1f1f35" />
+      <Block position={[0, 0, 0.08]} size={[1, 1.4, 0.02]} color="#8b5cf6" emissiveIntensity={0.1} />
+      {/* Abstract design */}
+      <Block position={[-0.2, 0.3, 0.1]} size={[0.3, 0.3, 0.01]} color="#c084fc" emissiveIntensity={0.2} />
+      <Block position={[0.2, -0.2, 0.1]} size={[0.4, 0.2, 0.01]} color="#a855f7" emissiveIntensity={0.2} />
+      <mesh position={[0, 0, 0.1]}>
+        <circleGeometry args={[0.2, 16]} />
+        <meshStandardMaterial color="#f0abfc" emissive="#f0abfc" emissiveIntensity={0.15} />
+      </mesh>
+    </group>
+  )
+}
+
+// Shelf with items
+function Shelf({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <Block position={[0, 0, 0]} size={[2, 0.1, 0.4]} color="#2d2d44" />
+      {/* Books */}
+      <Block position={[-0.6, 0.25, 0]} size={[0.15, 0.4, 0.25]} color="#8b5cf6" emissiveIntensity={0.1} />
+      <Block position={[-0.4, 0.2, 0]} size={[0.12, 0.3, 0.25]} color="#c084fc" emissiveIntensity={0.1} />
+      <Block position={[-0.25, 0.25, 0]} size={[0.1, 0.4, 0.25]} color="#a855f7" emissiveIntensity={0.1} />
+      {/* Small plant */}
+      <Block position={[0.3, 0.15, 0]} size={[0.2, 0.2, 0.2]} color="#4a3728" />
+      <Block position={[0.3, 0.3, 0]} size={[0.1, 0.15, 0.1]} color="#22c55e" emissiveIntensity={0.1} />
+      {/* Vinyl record display */}
+      <Block position={[0.7, 0.25, -0.1]} size={[0.4, 0.4, 0.05]} color="#0a0a0a" />
+      <mesh position={[0.7, 0.25, -0.05]}>
+        <circleGeometry args={[0.12, 16]} />
+        <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
+      </mesh>
+    </group>
+  )
+}
+
+// Ambient particles
+function AmbientParticles({ isPlaying }: { isPlaying: boolean }) {
+  const particlesRef = useRef<THREE.Points>(null)
+  const count = 50
 
   useFrame(({ clock }) => {
-    if (!notesRef.current || !isPlaying) return
-    notesRef.current.children.forEach((child, i) => {
-      child.position.y += 0.02
-      child.position.x += Math.sin(clock.getElapsedTime() + i) * 0.01
-      child.rotation.z = Math.sin(clock.getElapsedTime() * 2 + i) * 0.2
+    if (!particlesRef.current) return
+    const positions = particlesRef.current.geometry.attributes.position.array as Float32Array
 
-      if (child.position.y > 5) {
-        child.position.y = -2
-        child.position.x = (Math.random() - 0.5) * 8
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3
+      positions[i3 + 1] += isPlaying ? 0.02 : 0.005
+      positions[i3] += Math.sin(clock.getElapsedTime() + i) * 0.005
+
+      if (positions[i3 + 1] > 6) {
+        positions[i3 + 1] = 0
+        positions[i3] = (Math.random() - 0.5) * 10
+        positions[i3 + 2] = (Math.random() - 0.5) * 10
       }
-    })
+    }
+    particlesRef.current.geometry.attributes.position.needsUpdate = true
   })
 
-  if (!isPlaying) return null
+  const positions = new Float32Array(count * 3)
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 10
+    positions[i * 3 + 1] = Math.random() * 6
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+  }
 
   return (
-    <group ref={notesRef}>
-      {Array.from({ length: 8 }).map((_, i) => (
-        <Text
-          key={i}
-          position={[(Math.random() - 0.5) * 8, Math.random() * 4 - 2, -1]}
-          fontSize={0.4}
-          color="#8b5cf6"
-        >
-          ♪
-        </Text>
-      ))}
-    </group>
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.08}
+        color="#8b5cf6"
+        transparent
+        opacity={isPlaying ? 0.8 : 0.3}
+        sizeAttenuation
+      />
+    </points>
   )
 }
 
-// Main Scene
+// Main scene
 function Scene({ onPlay }: { onPlay: () => void }) {
   const [isPlaying, setIsPlaying] = useState(false)
 
@@ -486,43 +477,48 @@ function Scene({ onPlay }: { onPlay: () => void }) {
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[0, 5, 5]} intensity={1} color="#8b5cf6" />
-      <pointLight position={[-5, 3, 0]} intensity={0.5} color="#a855f7" />
-      <pointLight position={[5, 3, 0]} intensity={0.5} color="#c084fc" />
-      <spotLight position={[0, 8, 0]} angle={0.5} intensity={0.5} color="#8b5cf6" />
+      {/* Isometric camera */}
+      <OrthographicCamera
+        makeDefault
+        zoom={70}
+        position={[10, 10, 10]}
+        rotation={[-Math.PI / 6, Math.PI / 4, 0]}
+      />
 
-      <PixelCoder />
-      <Jukebox onPlay={handlePlay} />
-      <AudioBars isPlaying={isPlaying} />
-      <MusicNotes isPlaying={isPlaying} />
+      {/* Lighting */}
+      <ambientLight intensity={0.4} />
+      <pointLight position={[0, 5, 0]} intensity={0.8} color="#8b5cf6" />
+      <pointLight position={[-4, 3, -2]} intensity={0.5} color="#c084fc" />
+      <pointLight position={[3, 3, 0]} intensity={0.4} color="#a855f7" />
+      <directionalLight position={[5, 8, 5]} intensity={0.3} color="#ffffff" />
 
-      {/* Floor reflection */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -3, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial
-          color="#0a0a15"
-          metalness={0.9}
-          roughness={0.1}
-        />
-      </mesh>
+      {/* Room elements */}
+      <Room />
+      <DeskSetup />
+      <Character />
+      <VinylPlayer onPlay={handlePlay} isPlaying={isPlaying} />
+      <Speakers />
+
+      {/* Decorations */}
+      <Plant position={[3.5, 0, 0]} />
+      <Plant position={[-5, 0, -2]} />
+      <Poster position={[-2, 3.5, -5.9]} />
+      <Shelf position={[2, 2.5, -5.9]} />
+
+      {/* Ambient effects */}
+      <AmbientParticles isPlaying={isPlaying} />
     </>
   )
 }
 
 export default function VibesScene() {
   const handlePlay = useCallback(() => {
-    // Open YouTube link in new tab
     window.open('https://youtu.be/YxVZbMgA3p0?si=GalEaYZtQf_HDrjk', '_blank')
   }, [])
 
   return (
-    <div className="absolute inset-0 cursor-pointer">
-      <Canvas
-        camera={{ position: [0, 1, 10], fov: 50 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
-      >
+    <div className="absolute inset-0">
+      <Canvas gl={{ antialias: true, alpha: true }} dpr={[1, 2]}>
         <Scene onPlay={handlePlay} />
       </Canvas>
     </div>
