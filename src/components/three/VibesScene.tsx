@@ -350,7 +350,6 @@ function Jukebox({ onPlay }: { onPlay: () => void }) {
             color="#ffffff"
             anchorX="center"
             anchorY="middle"
-            font="/fonts/SpaceGrotesk-Bold.ttf"
           >
             {hovered ? 'CLICK!' : 'PLAY'}
           </Text>
