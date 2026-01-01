@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { Canvas } from '@react-three/fiber'
@@ -15,13 +15,12 @@ const VibesScene = dynamic(() => import('@/components/three/VibesScene'), {
 export default function Vibes() {
   const [currentVinyl, setCurrentVinyl] = useState<VinylData>(vinylCollection[0])
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isReady, setIsReady] = useState(false)
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(false)
   const playerRef = useRef<YouTubePlayer | null>(null)
 
   // Handle YouTube player ready
   const handlePlayerReady = useCallback((event: YouTubeEvent) => {
     playerRef.current = event.target
-    setIsReady(true)
   }, [])
 
   // Handle YouTube player state changes
@@ -38,20 +37,15 @@ export default function Vibes() {
   const togglePlayPause = useCallback(() => {
     if (isPlaying) {
       playerRef.current?.pauseVideo()
-      setIsPlaying(false)
     } else {
       playerRef.current?.playVideo()
-      setIsPlaying(true)
     }
   }, [isPlaying])
 
   // Change track
   const changeTrack = useCallback((vinyl: VinylData, autoPlay: boolean = true) => {
+    setShouldAutoPlay(autoPlay)
     setCurrentVinyl(vinyl)
-    setIsReady(false)
-    if (autoPlay) {
-      setIsPlaying(true)
-    }
   }, [])
 
   // Feel Lucky - random track
@@ -74,13 +68,6 @@ export default function Vibes() {
     const prevIndex = currentIndex === 0 ? vinylCollection.length - 1 : currentIndex - 1
     changeTrack(vinylCollection[prevIndex], true)
   }, [currentVinyl, changeTrack])
-
-  // Auto-play when player is ready and isPlaying is true
-  useEffect(() => {
-    if (isReady && isPlaying) {
-      playerRef.current?.playVideo()
-    }
-  }, [isReady, isPlaying])
 
   // Featured tracks (first 5) for quick access
   const featuredTracks = vinylCollection.slice(0, 5)
@@ -107,7 +94,7 @@ export default function Vibes() {
             height: '1',
             width: '1',
             playerVars: {
-              autoplay: 0,
+              autoplay: shouldAutoPlay ? 1 : 0,
               controls: 0,
               modestbranding: 1,
               rel: 0,
