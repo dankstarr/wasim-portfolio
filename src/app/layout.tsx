@@ -10,16 +10,23 @@ export const metadata: Metadata = {
   description: 'Results-driven Full Stack Developer with 4 years of professional experience crafting robust web and mobile applications using React, React Native, and Node.js.',
   keywords: ['Frontend Engineer', 'React Developer', 'Full Stack Developer', 'Jashan Shetty', 'Web Developer', 'React Native', 'Node.js', 'TypeScript'],
   authors: [{ name: 'Jashan Shetty' }],
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+  },
   openGraph: {
     title: 'Jashan Shetty | Frontend Engineer',
     description: 'Results-driven Full Stack Developer with 4 years of professional experience',
     type: 'website',
     locale: 'en_US',
+    images: ['/avatar.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Jashan Shetty | Frontend Engineer',
     description: 'Results-driven Full Stack Developer with 4 years of professional experience',
+    images: ['/avatar.png'],
   },
   robots: {
     index: true,
