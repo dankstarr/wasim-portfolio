@@ -14,7 +14,8 @@ const config: Config = {
         accent: '#6366f1',
         'accent-light': '#818cf8',
         'text-primary': '#fafafa',
-        'text-secondary': '#a1a1aa',
+        'text-secondary': '#d4d4d8', // Improved contrast: changed from #a1a1aa to #d4d4d8 (zinc-300) for better readability
+        'text-tertiary': '#a1a1aa', // For less important text
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

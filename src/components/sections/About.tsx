@@ -55,32 +55,36 @@ export default function About() {
     <section
       id="about"
       ref={containerRef}
-      className="relative py-32 overflow-hidden"
+      className="relative py-20 md:py-24 overflow-hidden"
+      aria-label="About section"
     >
       {/* Background decorations */}
       <motion.div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-20"
         style={{ y: backgroundY }}
       >
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/15 rounded-full blur-2xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/15 rounded-full blur-2xl" />
       </motion.div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-20">
+        <div ref={titleRef} className="text-center mb-12 md:mb-16">
           <motion.span
             className="text-accent font-mono text-sm tracking-wider uppercase mb-4 block"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
+            style={{ willChange: 'transform, opacity' }}
           >
             About Me
           </motion.span>
-          <AnimatedText
-            text="Crafting Digital Experiences"
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold"
-          />
+          <h2 className="group">
+            <AnimatedText
+              text="Crafting Digital Experiences"
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold select-text text-white group-hover:text-white transition-colors duration-300"
+            />
+          </h2>
         </div>
 
         {/* Content Grid */}
@@ -89,13 +93,14 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={contentInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            style={{ willChange: 'transform, opacity' }}
           >
-            <h3 className="text-2xl font-display font-semibold mb-6">
-              Hi, I&apos;m <span className="gradient-text">Jashan</span>
+            <h3 className="text-2xl font-display font-semibold mb-6 select-text">
+              Hi, I&apos;m <span className="gradient-text">Wasim</span> <span aria-label="wave emoji">👋</span>
             </h3>
 
-            <p className="text-text-secondary text-lg leading-relaxed mb-6">
+            <p className="text-text-secondary text-lg leading-relaxed mb-6 select-text">
               {personalInfo.bio}
             </p>
 
@@ -113,20 +118,20 @@ export default function About() {
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                   </span>
-                  <p className="text-text-secondary">{point}</p>
+                  <p className="text-text-secondary select-text">{point}</p>
                 </motion.div>
               ))}
             </div>
 
             {/* Quick Info */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="glass rounded-xl p-4">
-                <span className="text-text-secondary text-sm">Location</span>
-                <p className="text-white font-medium">{personalInfo.location}</p>
+              <div className="glass rounded-2xl p-5">
+                <span className="text-text-secondary text-sm font-medium">Location</span>
+                <p className="text-white font-semibold mt-1.5 select-text">{personalInfo.location}</p>
               </div>
-              <div className="glass rounded-xl p-4">
-                <span className="text-text-secondary text-sm">Experience</span>
-                <p className="text-white font-medium">4+ Years</p>
+              <div className="glass rounded-2xl p-5">
+                <span className="text-text-secondary text-sm font-medium">Experience</span>
+                <p className="text-white font-semibold mt-1.5 select-text">7+ Years</p>
               </div>
             </div>
           </motion.div>
@@ -139,23 +144,27 @@ export default function About() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             {achievements.map((achievement, index) => (
-              <motion.div
+              <motion.article
                 key={index}
-                className="group glass rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 animated-border"
+                className="group glass rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 animated-border focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-primary"
+                style={{ isolation: 'isolate' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={contentInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                 whileHover={{ y: -5 }}
+                tabIndex={0}
+                role="article"
+                aria-label={`Achievement: ${achievement.title} - ${achievement.value}`}
               >
-                <div className="text-accent mb-4 group-hover:scale-110 transition-transform">
+                <div className="text-accent mb-4 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
                   {achievementIcons[achievement.icon]}
                 </div>
-                <div className="text-3xl font-display font-bold gradient-text mb-2">
+                <div className="text-3xl font-display font-bold text-white mb-2 leading-tight group-hover:text-white transition-colors duration-300" aria-label={achievement.value}>
                   {achievement.value}
                 </div>
-                <h4 className="font-semibold text-white mb-1">{achievement.title}</h4>
-                <p className="text-text-secondary text-sm">{achievement.description}</p>
-              </motion.div>
+                <h4 className="font-semibold text-white mb-2 select-text leading-snug group-hover:text-white transition-colors duration-300">{achievement.title}</h4>
+                <p className="text-text-secondary group-hover:text-white text-sm leading-relaxed select-text transition-colors duration-300">{achievement.description}</p>
+              </motion.article>
             ))}
           </motion.div>
         </div>
@@ -176,10 +185,10 @@ export default function About() {
             <div className="flex animate-marquee">
               {[...Array(2)].map((_, i) => (
                 <div key={i} className="flex gap-8 px-4">
-                  {['React', 'React Native', 'Next.js', 'TypeScript', 'Node.js', 'GraphQL', 'WebSockets', 'Solidity', 'AWS', 'Python', 'JavaScript', 'CSS'].map((tech) => (
+                  {['React', 'Next.js', 'JavaScript', 'HTML', 'CSS', 'Flask', 'Python', 'TerminalFour', 'MongoDB', 'MySQL', 'AWS', 'Docker', 'Git', 'Google Analytics', 'Google Tag Manager', 'Silktide', 'Three.js'].map((tech) => (
                     <span
                       key={`${i}-${tech}`}
-                      className="text-2xl font-display font-semibold text-white/20 whitespace-nowrap hover:text-accent transition-colors cursor-default"
+                      className="text-2xl font-display font-semibold text-text-secondary whitespace-nowrap hover:text-accent hover:opacity-100 transition-all duration-300 cursor-default"
                     >
                       {tech}
                     </span>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jashanshetty.com/sitemap.xml
+Sitemap: https://wasimekram.com/sitemap.xml

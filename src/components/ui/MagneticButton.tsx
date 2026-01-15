@@ -83,14 +83,24 @@ export function MagneticButton({
   onClick,
   type = 'button',
   disabled = false,
+  as,
+  href,
+  target,
+  rel,
+  'aria-label': ariaLabel,
 }: {
   children: ReactNode
   className?: string
   onClick?: () => void
   type?: 'button' | 'submit'
   disabled?: boolean
+  as?: 'button' | 'a'
+  href?: string
+  target?: string
+  rel?: string
+  'aria-label'?: string
 }) {
-  const ref = useRef<HTMLButtonElement>(null)
+  const ref = useRef<HTMLButtonElement | HTMLAnchorElement>(null)
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -115,20 +125,38 @@ export function MagneticButton({
     y.set(0)
   }
 
+  const commonProps = {
+    ref: ref as any,
+    className,
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    style: {
+      x: xSpring,
+      y: ySpring,
+    },
+    whileTap: { scale: 0.97 },
+    'aria-label': ariaLabel,
+  }
+
+  if (as === 'a') {
+    return (
+      <motion.a
+        {...commonProps}
+        href={href}
+        target={target}
+        rel={rel}
+      >
+        {children}
+      </motion.a>
+    )
+  }
+
   return (
     <motion.button
-      ref={ref}
+      {...commonProps}
       type={type}
-      className={className}
       onClick={onClick}
       disabled={disabled}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        x: xSpring,
-        y: ySpring,
-      }}
-      whileTap={{ scale: 0.97 }}
     >
       {children}
     </motion.button>

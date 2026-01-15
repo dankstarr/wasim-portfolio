@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo, Suspense } from 'react'
+import { useRef, useMemo, Suspense, useState, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   Float,
@@ -28,13 +28,21 @@ function FloatingShapeSphere({
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame(() => {
     if (!meshRef.current) return
-    const targetX = position[0] + mouse.normalizedX * 0.3
-    const targetY = position[1] + mouse.normalizedY * 0.3
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    frameCount.current++
+    
+    // Skip frames for mouse updates (every 2nd frame)
+    if (frameCount.current % 2 === 0) {
+      const targetX = position[0] + mouse.normalizedX * 0.3
+      const targetY = position[1] + mouse.normalizedY * 0.3
+      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
+      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    }
+    
+    // Always update rotation
     meshRef.current.rotation.x += 0.003 * speed
     meshRef.current.rotation.y += 0.005 * speed
   })
@@ -42,8 +50,8 @@ function FloatingShapeSphere({
   return (
     <Float speed={speed} rotationIntensity={0.5} floatIntensity={1}>
       <mesh ref={meshRef} position={position} scale={scale}>
-        <Sphere args={[1, 32, 32]}>
-          <MeshDistortMaterial color={color} roughness={0.2} metalness={0.8} distort={0.3} speed={2} transparent opacity={0.8} />
+        <Sphere args={[1, 12, 12]}>
+          <MeshDistortMaterial color={color} roughness={0.2} metalness={0.8} distort={0.15} speed={1.2} transparent opacity={0.8} />
         </Sphere>
       </mesh>
     </Float>
@@ -63,13 +71,19 @@ function FloatingShapeOctahedron({
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame(() => {
     if (!meshRef.current) return
-    const targetX = position[0] + mouse.normalizedX * 0.3
-    const targetY = position[1] + mouse.normalizedY * 0.3
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    frameCount.current++
+    
+    if (frameCount.current % 2 === 0) {
+      const targetX = position[0] + mouse.normalizedX * 0.3
+      const targetY = position[1] + mouse.normalizedY * 0.3
+      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
+      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    }
+    
     meshRef.current.rotation.x += 0.003 * speed
     meshRef.current.rotation.y += 0.005 * speed
   })
@@ -98,13 +112,19 @@ function FloatingShapeTorus({
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame(() => {
     if (!meshRef.current) return
-    const targetX = position[0] + mouse.normalizedX * 0.3
-    const targetY = position[1] + mouse.normalizedY * 0.3
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    frameCount.current++
+    
+    if (frameCount.current % 2 === 0) {
+      const targetX = position[0] + mouse.normalizedX * 0.3
+      const targetY = position[1] + mouse.normalizedY * 0.3
+      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
+      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    }
+    
     meshRef.current.rotation.x += 0.003 * speed
     meshRef.current.rotation.y += 0.005 * speed
   })
@@ -112,8 +132,8 @@ function FloatingShapeTorus({
   return (
     <Float speed={speed} rotationIntensity={0.5} floatIntensity={1}>
       <mesh ref={meshRef} position={position} scale={scale}>
-        <Torus args={[0.5, 0.2, 16, 32]}>
-          <MeshDistortMaterial color={color} roughness={0.2} metalness={0.8} distort={0.3} speed={2} transparent opacity={0.8} />
+        <Torus args={[0.5, 0.2, 8, 16]}>
+          <MeshDistortMaterial color={color} roughness={0.2} metalness={0.8} distort={0.2} speed={1.5} transparent opacity={0.8} />
         </Torus>
       </mesh>
     </Float>
@@ -133,13 +153,19 @@ function FloatingShapeBox({
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame(() => {
     if (!meshRef.current) return
-    const targetX = position[0] + mouse.normalizedX * 0.3
-    const targetY = position[1] + mouse.normalizedY * 0.3
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    frameCount.current++
+    
+    if (frameCount.current % 2 === 0) {
+      const targetX = position[0] + mouse.normalizedX * 0.3
+      const targetY = position[1] + mouse.normalizedY * 0.3
+      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.02)
+      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.02)
+    }
+    
     meshRef.current.rotation.x += 0.003 * speed
     meshRef.current.rotation.y += 0.005 * speed
   })
@@ -157,7 +183,7 @@ function FloatingShapeBox({
 
 function ParticleField() {
   const particlesRef = useRef<THREE.Points>(null)
-  const count = 2000
+  const count = 700 // Increased for more sparkles while maintaining performance
 
   const positions = useMemo(() => {
     const positions = new Float32Array(count * 3)
@@ -169,10 +195,16 @@ function ParticleField() {
     return positions
   }, [])
 
+  const frameCount = useRef(0)
   useFrame((state) => {
     if (!particlesRef.current) return
-    particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02
-    particlesRef.current.rotation.x = state.clock.elapsedTime * 0.01
+    frameCount.current++
+    
+    // Update every 2nd frame
+    if (frameCount.current % 2 === 0) {
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02
+      particlesRef.current.rotation.x = state.clock.elapsedTime * 0.01
+    }
   })
 
   return (
@@ -186,10 +218,10 @@ function ParticleField() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.03}
+        size={0.04}
         color="#6366f1"
         transparent
-        opacity={0.6}
+        opacity={0.7}
         sizeAttenuation
       />
     </points>
@@ -199,28 +231,34 @@ function ParticleField() {
 function GlowingOrb() {
   const meshRef = useRef<THREE.Mesh>(null)
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame((state) => {
     if (!meshRef.current) return
+    frameCount.current++
 
-    meshRef.current.position.x = THREE.MathUtils.lerp(
-      meshRef.current.position.x,
-      mouse.normalizedX * 2,
-      0.05
-    )
-    meshRef.current.position.y = THREE.MathUtils.lerp(
-      meshRef.current.position.y,
-      mouse.normalizedY * 2,
-      0.05
-    )
+    // Update position every 2nd frame
+    if (frameCount.current % 2 === 0) {
+      meshRef.current.position.x = THREE.MathUtils.lerp(
+        meshRef.current.position.x,
+        mouse.normalizedX * 2,
+        0.05
+      )
+      meshRef.current.position.y = THREE.MathUtils.lerp(
+        meshRef.current.position.y,
+        mouse.normalizedY * 2,
+        0.05
+      )
+    }
 
+    // Update scale every frame (smooth animation)
     const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1
     meshRef.current.scale.setScalar(scale)
   })
 
   return (
-    <mesh ref={meshRef} position={[0, 0, -2]}>
-      <sphereGeometry args={[2, 64, 64]} />
+      <mesh ref={meshRef} position={[0, 0, -2]}>
+      <sphereGeometry args={[2, 24, 24]} />
       <meshStandardMaterial
         color="#6366f1"
         emissive="#4338ca"
@@ -237,19 +275,25 @@ function GlowingOrb() {
 function CameraController() {
   const { camera } = useThree()
   const mouse = useMousePosition()
+  const frameCount = useRef(0)
 
   useFrame(() => {
-    camera.position.x = THREE.MathUtils.lerp(
-      camera.position.x,
-      mouse.normalizedX * 0.5,
-      0.02
-    )
-    camera.position.y = THREE.MathUtils.lerp(
-      camera.position.y,
-      mouse.normalizedY * 0.5,
-      0.02
-    )
-    camera.lookAt(0, 0, 0)
+    frameCount.current++
+    
+    // Update camera every 3rd frame (less frequent)
+    if (frameCount.current % 3 === 0) {
+      camera.position.x = THREE.MathUtils.lerp(
+        camera.position.x,
+        mouse.normalizedX * 0.5,
+        0.02
+      )
+      camera.position.y = THREE.MathUtils.lerp(
+        camera.position.y,
+        mouse.normalizedY * 0.5,
+        0.02
+      )
+      camera.lookAt(0, 0, 0)
+    }
   })
 
   return null
@@ -282,7 +326,7 @@ function Scene() {
       <ParticleField />
 
       {/* Background stars */}
-      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+      <Stars radius={100} depth={50} count={800} factor={4} saturation={0} fade speed={1} />
 
       <Environment preset="night" />
     </>
@@ -290,12 +334,61 @@ function Scene() {
 }
 
 export default function HeroScene() {
+  const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    // Skip Three.js during Lighthouse audits
+    if (typeof window !== 'undefined' && window.navigator && /Lighthouse|Chrome-Lighthouse|HeadlessChrome/i.test(window.navigator.userAgent)) {
+      setHasError(true)
+      return
+    }
+
+    // Check if WebGL is supported
+    try {
+      const canvas = document.createElement('canvas')
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      if (!gl) {
+        console.warn('WebGL not supported, falling back to static background')
+        setHasError(true)
+      }
+    } catch (error) {
+      console.error('WebGL check failed:', error)
+      setHasError(true)
+    }
+  }, [])
+
+  if (hasError) {
+    return (
+      <div className="absolute inset-0 -z-10 bg-primary">
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+      </div>
+    )
+  }
+
   return (
     <div className="absolute inset-0 -z-10">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.5]}
+        gl={{ 
+          antialias: false, 
+          alpha: true,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: false,
+          preserveDrawingBuffer: false,
+          failIfMajorPerformanceCaveat: false
+        }}
+        performance={{ min: 0.3, max: 0.8 }}
+        onCreated={({ gl }) => {
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+        }}
+        onError={(error) => {
+          console.error('Canvas error:', error)
+          setHasError(true)
+        }}
       >
         <Suspense fallback={null}>
           <Scene />

@@ -4,60 +4,26 @@ import { useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useInView } from '@/hooks/useInView'
 import AnimatedText from '@/components/ui/AnimatedText'
-import { projects, experience } from '@/data/portfolio'
+import { projects } from '@/data/portfolio'
 
-// Get featured company projects
-const featuredProjects = [
-  {
-    title: 'DeepReel',
-    description: 'AI-powered video platform with React-based interface and advanced analytics',
-    highlights: [
-      'Built Remotion Genie Editor with SVG masking and dynamic captions',
-      'Created dashboards with heatmaps and funnel charts',
-      'Integrated granular analytics for video interactions',
-    ],
-    technologies: ['React', 'Next.js', 'Remotion', 'Analytics', 'BAML'],
-    link: 'https://www.deepreel.com/',
-    image: '/projects/deepreel.png',
-    gradient: 'from-violet-600 to-indigo-600',
-  },
-  {
-    title: 'LXME',
-    description: 'Financial platform for women with 8,000+ daily active users',
-    highlights: [
-      'Upgraded React Native from 0.69 to 0.74',
-      'Reduced crash rate from 6% to 1.25%',
-      'Spearheaded Savings Challenge feature driving 30% SIP growth',
-    ],
-    technologies: ['React Native', 'Sentry', 'TypeScript'],
-    link: 'https://lxme.in',
-    image: '/projects/lxme.png',
-    gradient: 'from-pink-600 to-rose-600',
-  },
-  {
-    title: 'Rep3',
-    description: 'Web3 community engagement platform with 250K+ gas-less badges minted',
-    highlights: [
-      'Built SaaS platform for DAO contributor compensation',
-      'Created NPM package for protocol integration',
-      'Implemented robust CI/CD pipelines',
-    ],
-    technologies: ['Node.js', 'Solidity', 'JavaScript', 'CI/CD'],
-    link: 'https://app.rep3.gg/',
-    image: '/projects/rep3.png',
-    gradient: 'from-emerald-600 to-teal-600',
-  },
-  ...projects.map((p, i) => ({
-    ...p,
-    gradient: i === 0 ? 'from-amber-600 to-orange-600' : 'from-cyan-600 to-blue-600',
-  })),
+// Map projects with gradients
+const gradients = [
+  'from-violet-600 to-indigo-600',
+  'from-emerald-600 to-teal-600',
+  'from-amber-600 to-orange-600',
+  'from-cyan-600 to-blue-600',
 ]
+
+const featuredProjects = projects.map((p, i) => ({
+  ...p,
+  gradient: gradients[i % gradients.length],
+}))
 
 export default function Projects() {
   const [titleRef, titleInView] = useInView<HTMLDivElement>({ threshold: 0.2, triggerOnce: true })
 
   return (
-    <section id="projects" className="relative py-32 overflow-hidden">
+    <section id="projects" className="relative py-20 md:py-24 overflow-hidden" aria-label="Projects section">
       {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
@@ -66,26 +32,30 @@ export default function Projects() {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-20">
+        <div ref={titleRef} className="text-center mb-12 md:mb-16">
           <motion.span
             className="text-accent font-mono text-sm tracking-wider uppercase mb-4 block"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
+            style={{ willChange: 'transform, opacity' }}
           >
             Featured Work
           </motion.span>
-          <AnimatedText
-            text="Projects & Products"
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold"
-          />
+          <h2>
+            <AnimatedText
+              text="Projects & Products"
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold select-text"
+            />
+          </h2>
           <motion.p
-            className="mt-6 text-text-secondary max-w-2xl mx-auto"
+            className="mt-6 text-text-secondary max-w-2xl mx-auto select-text"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            style={{ willChange: 'transform, opacity' }}
           >
-            A showcase of products and platforms I&apos;ve helped build
+            A selection of platforms and systems I&apos;ve built or contributed to
           </motion.p>
         </div>
 
@@ -152,9 +122,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="perspective-1000"
     >
-      <motion.div
+      <motion.article
         ref={cardRef}
-        className="relative group cursor-pointer"
+        className="relative group cursor-pointer focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-primary rounded-2xl"
         style={{
           rotateX,
           rotateY,
@@ -165,20 +135,31 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         onMouseLeave={handleMouseLeave}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.3 }}
+        tabIndex={0}
+        role="article"
+        aria-label={`Project: ${project.title}`}
       >
         {/* Card Background */}
-        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`} />
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
 
         {/* Card Content */}
-        <div className="relative glass rounded-2xl p-8 h-full border border-white/10 group-hover:border-white/20 transition-colors overflow-hidden">
+        <div className="relative glass rounded-2xl p-8 md:p-10 h-full border border-white/10 group-hover:border-white/20 transition-all duration-300 overflow-hidden">
           {/* Shine effect */}
           <motion.div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden"
             style={{
               background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)',
-              transform: isHovered ? 'translateX(100%)' : 'translateX(-100%)',
-              transition: 'transform 0.6s ease-out',
+              backgroundSize: '200% 100%',
+              willChange: 'transform',
             }}
+            animate={{
+              x: isHovered ? ['-200%', '200%'] : '-200%',
+            }}
+            transition={{
+              duration: 0.6,
+              ease: 'easeOut',
+            }}
+            aria-hidden="true"
           />
 
           {/* Header */}
@@ -187,17 +168,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               <h3 className="text-2xl font-display font-bold text-white group-hover:text-accent transition-colors">
                 {project.title}
               </h3>
-              <p className="text-text-secondary mt-2">{project.description}</p>
+              <p className="text-text-secondary group-hover:text-text-primary mt-2 select-text transition-colors duration-300">{project.description}</p>
             </div>
             {project.link && (
               <a
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-accent transition-colors p-2"
+                className="text-text-secondary hover:text-white hover:bg-white/10 transition-all duration-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
                 onClick={(e) => e.stopPropagation()}
+                aria-label={`Visit ${project.title} project (opens in new tab)`}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
@@ -209,7 +191,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.highlights.slice(0, 3).map((highlight, idx) => (
               <motion.li
                 key={idx}
-                className="text-text-secondary text-sm flex gap-2"
+                className="text-text-secondary group-hover:text-text-primary text-sm flex gap-2 select-text transition-colors duration-300"
                 initial={{ opacity: 0, x: -10 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ delay: 0.3 + idx * 0.1 }}
@@ -225,7 +207,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.technologies.map((tech, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 rounded-full bg-white/5 text-white text-xs border border-white/10"
+                className="px-3 py-1.5 rounded-full bg-white/5 text-white text-xs font-medium border border-white/10 hover:border-white/20 hover:bg-white/8 transition-all duration-200"
               >
                 {tech}
               </span>
@@ -243,7 +225,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             transition={{ duration: 0.3 }}
           />
         </div>
-      </motion.div>
+      </motion.article>
     </motion.div>
   )
 }

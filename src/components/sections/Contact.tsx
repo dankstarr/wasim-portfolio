@@ -4,42 +4,44 @@ import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useInView } from '@/hooks/useInView'
 import AnimatedText from '@/components/ui/AnimatedText'
-import { personalInfo } from '@/data/portfolio'
+import { personalInfo, getMailtoUrl } from '@/data/portfolio'
 
 export default function Contact() {
   const [titleRef, titleInView] = useInView<HTMLDivElement>({ threshold: 0.2, triggerOnce: true })
   const [cardsRef, cardsInView] = useInView<HTMLDivElement>({ threshold: 0.1, triggerOnce: true })
 
   return (
-    <section id="contact" className="relative py-24 md:py-40 overflow-hidden">
+    <section id="contact" className="relative py-20 md:py-28 overflow-hidden" aria-label="Contact section">
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-primary to-accent/5" />
 
         {/* Floating orbs */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-2xl"
           animate={{
             x: [0, 50, 0],
             y: [0, -30, 0],
-            scale: [1, 1.1, 1],
+            scale: [1, 1.05, 1],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ willChange: 'transform' }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-2xl"
           animate={{
             x: [0, -40, 0],
             y: [0, 40, 0],
-            scale: [1, 1.2, 1],
+            scale: [1, 1.1, 1],
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ willChange: 'transform' }}
         />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-16 md:mb-24">
+        <div ref={titleRef} className="text-center mb-12 md:mb-16">
           <motion.span
             className="inline-block text-accent font-mono text-xs md:text-sm tracking-wider uppercase mb-4 md:mb-6"
             initial={{ opacity: 0, y: 20 }}
@@ -49,18 +51,24 @@ export default function Contact() {
             Let&apos;s Connect
           </motion.span>
 
-          <div className="mb-6 md:mb-8">
-            <AnimatedText
-              text="Ready to Build Something Great?"
-              className="text-3xl md:text-5xl lg:text-7xl font-display font-bold"
-            />
-          </div>
-
-          <motion.p
-            className="text-text-secondary max-w-2xl mx-auto text-base md:text-xl leading-relaxed"
+          <motion.div
+            className="mb-6 md:mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            style={{ willChange: 'transform, opacity' }}
+          >
+            <h2 className="text-3xl md:text-5xl lg:text-7xl font-display font-bold select-text">
+              Ready to Build Something Great?
+            </h2>
+          </motion.div>
+
+          <motion.p
+            className="text-text-secondary max-w-2xl mx-auto text-base md:text-xl leading-relaxed select-text"
+            initial={{ opacity: 0, y: 20 }}
+            animate={titleInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            style={{ willChange: 'transform, opacity' }}
           >
             I&apos;m currently open to new opportunities and would love to hear from you.
             Let&apos;s discuss how we can create something amazing together.
@@ -73,7 +81,7 @@ export default function Contact() {
             <SocialCard
               href={personalInfo.github}
               platform="GitHub"
-              username="@eth-jashan"
+              username="@wasimekram"
               description="Check out my code, open source contributions, and side projects"
               icon={
                 <svg className="w-8 h-8 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
@@ -88,7 +96,7 @@ export default function Contact() {
             <SocialCard
               href={personalInfo.linkedin}
               platform="LinkedIn"
-              username="Jashan Shetty"
+              username="Wasim Ekram"
               description="Connect with me professionally and explore my career journey"
               icon={
                 <svg className="w-8 h-8 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
@@ -108,27 +116,25 @@ export default function Contact() {
             animate={cardsInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            <p className="text-text-secondary text-sm md:text-base mb-4">
+            <p className="text-text-secondary text-sm md:text-base mb-4 select-text">
               Prefer email? Reach out directly
             </p>
-            <motion.a
-              href={`mailto:${personalInfo.email}`}
-              className="group inline-flex items-center gap-3 text-xl md:text-2xl lg:text-3xl font-display font-semibold text-white hover:text-accent transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <a
+              href={getMailtoUrl(personalInfo.email)}
+              className="group inline-flex items-center gap-3 text-xl md:text-2xl lg:text-3xl font-display font-semibold text-white hover:text-accent transition-colors select-text min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded-lg px-2"
+              aria-label={`Send email to ${personalInfo.email}`}
             >
               <span>{personalInfo.email}</span>
-              <motion.svg
-                className="w-5 h-5 md:w-6 md:h-6 text-accent"
+              <svg
+                className="w-5 h-5 md:w-6 md:h-6 text-accent group-hover:translate-x-1 transition-transform duration-300"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                initial={{ x: 0 }}
-                whileHover={{ x: 5 }}
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </motion.svg>
-            </motion.a>
+              </svg>
+            </a>
           </motion.div>
 
           {/* Availability Badge */}
@@ -138,13 +144,13 @@ export default function Contact() {
             animate={cardsInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass">
+            <div className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full glass">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
               </span>
-              <span className="text-sm md:text-base text-text-secondary">
-                Currently available for <span className="text-white font-medium">Frontend Engineer</span> roles
+              <span className="text-sm md:text-base text-text-secondary select-text leading-relaxed">
+                Currently available for <span className="text-white font-semibold">Web Developer / Full-Stack Engineer</span> roles
               </span>
             </div>
           </motion.div>
@@ -214,7 +220,7 @@ function SocialCard({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative block"
+      className="group relative block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded-2xl"
       initial={{ opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
@@ -225,21 +231,22 @@ function SocialCard({
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      aria-label={`Visit ${platform} profile - ${username} (opens in new tab)`}
     >
       {/* Animated gradient border */}
-      <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"
+      <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r opacity-0 group-hover:opacity-50 transition-opacity duration-500 blur-sm"
         style={{ backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))` }}
       />
-      <div className={`absolute -inset-0.5 rounded-2xl bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-75 transition-opacity duration-500`} />
+      <div className={`absolute -inset-0.5 rounded-2xl bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
 
       {/* Card content */}
-      <div className="relative glass rounded-2xl p-6 md:p-8 h-full overflow-hidden">
+      <div className="relative glass rounded-2xl p-6 md:p-8 lg:p-10 h-full overflow-hidden">
         {/* Hover glow effect */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-8 transition-opacity duration-500`} />
 
         {/* Icon */}
         <motion.div
-          className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-6 text-white`}
+          className={`relative z-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-6 text-white`}
           whileHover={{ scale: 1.05, rotate: 5 }}
           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
@@ -247,36 +254,45 @@ function SocialCard({
         </motion.div>
 
         {/* Text content */}
-        <div className="relative">
-          <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-1 group-hover:text-accent transition-colors">
+        <div className="relative z-10">
+          <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-1 group-hover:text-white transition-colors duration-300 select-text">
             {platform}
           </h3>
-          <p className="text-accent font-mono text-sm md:text-base mb-3">
+          <p className="text-accent font-mono text-sm md:text-base mb-3 group-hover:text-white select-text transition-colors duration-300">
             {username}
           </p>
-          <p className="text-text-secondary text-sm md:text-base leading-relaxed">
+          <p className="text-text-secondary group-hover:text-white text-sm md:text-base leading-relaxed select-text transition-colors duration-300">
             {description}
           </p>
         </div>
 
         {/* Arrow indicator */}
         <motion.div
-          className="absolute top-6 md:top-8 right-6 md:right-8 text-text-secondary group-hover:text-accent transition-colors"
+          className="absolute top-6 md:top-8 right-6 md:right-8 text-text-secondary group-hover:text-white transition-colors duration-300 z-10"
           initial={{ x: 0, y: 0 }}
           whileHover={{ x: 5, y: -5 }}
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
           </svg>
         </motion.div>
 
         {/* Shine effect on hover */}
         <motion.div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100"
-          initial={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)' }}
-          animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-          transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-          style={{ backgroundSize: '200% 100%' }}
+          className="absolute inset-0 opacity-0 group-hover:opacity-30 pointer-events-none overflow-hidden"
+          style={{
+            background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 55%, transparent 60%)',
+            backgroundSize: '200% 100%',
+            willChange: 'transform',
+          }}
+          animate={{
+            x: ['200%', '-200%'],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
         />
       </div>
     </motion.a>

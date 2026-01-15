@@ -1,146 +1,190 @@
+// Email template for collaboration/hiring inquiries
+export const getEmailTemplate = () => {
+  const subject = encodeURIComponent('Collaboration Opportunity - Web Developer Role')
+  const body = encodeURIComponent(`Hi Wasim,
+
+I came across your portfolio and I'm interested in discussing a potential collaboration or role opportunity.
+
+About me/us:
+[Your name/company]
+
+Opportunity details:
+[Brief description of the role/project]
+
+Timeline:
+[Expected start date or project timeline]
+
+Best regards,
+[Your name]`)
+  return { subject, body }
+}
+
+// Helper function to get the full mailto URL with template
+export const getMailtoUrl = (email: string) => {
+  const { subject, body } = getEmailTemplate()
+  return `mailto:${email}?subject=${subject}&body=${body}`
+}
+
 export const personalInfo = {
-  name: 'Jashan Shetty',
-  title: 'Frontend Engineer',
-  email: 'jashanshetty1709@gmail.com',
-  phone: '+91 9820769479',
-  location: 'Bangalore, India',
-  github: 'https://github.com/eth-jashan',
-  linkedin: 'https://www.linkedin.com/in/jashan-shetty-aa1501141/',
-  bio: 'Results-driven Full Stack Developer with 4 years of professional experience crafting robust web and mobile applications using React, React Native, and Node.js.',
+  name: 'Wasim Ekram',
+  title: 'Web Developer & Full-Stack Engineer',
+  email: 'wasimekram123@gmail.com',
+  phone: '07424 219449',
+  location: 'London, United Kingdom',
+  github: 'https://github.com/wasimekram',
+  linkedin: 'https://www.linkedin.com/in/wasimekram/',
+  bio: 'Results-driven Web Developer with 7+ years of professional experience building full-stack and hybrid applications using React, Next.js, Flask, and Python.',
   summary: [
-    'Architecting and implementing scalable solutions that have improved application performance by 40%',
-    'Leading the development of 5+ successful projects from concept to deployment in fast-paced startup environments',
-    'Mentoring junior developers and driving the adoption of best practices, resulting in a 30% reduction in bug reports',
-    'Collaborating cross-functionally to translate complex business requirements into user-centric features with 95% client satisfaction',
+    'Delivered scalable backends, RESTful APIs, and GPT-powered applications including chatbots and automation tools',
+    'Managed and optimised 250+ production websites, improving accessibility, performance, and compliance',
+    'Reduced page load times by 60% using CDN/PXL image optimisation and modern frontend practices',
+    'Led accessibility improvements, raising WCAG AA scores from 80% to 91%',
+    'Strong experience with analytics, data pipelines, and AI-driven systems',
   ],
 }
 
 export const skills = {
-  languages: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Python'],
-  frameworks: ['React', 'React Native', 'Next.js', 'Node.js'],
-  tools: ['GraphQL', 'WebSockets', 'Solidity', 'AWS', 'Git'],
-  methodologies: ['CI/CD', 'Agile', 'TDD'],
-  others: ['Blockchain', 'Analytics', 'Sentry'],
+  languages: ['HTML', 'CSS', 'JavaScript', 'Python'],
+  frameworks: ['React', 'Next.js', 'Flask'],
+  tools: ['TerminalFour', 'MongoDB', 'MySQL', 'AWS', 'Docker', 'Git', 'Google Analytics', 'Google Tag Manager', 'Silktide', 'Three.js'],
+  methodologies: [],
+  others: ['Accessibility (WCAG)'],
 }
+
+export const skillsWithLevels = [
+  { name: 'React', level: 95 },
+  { name: 'Next.js', level: 90 },
+  { name: 'JavaScript', level: 95 },
+  { name: 'HTML', level: 98 },
+  { name: 'CSS', level: 95 },
+  { name: 'Python', level: 85 },
+  { name: 'Flask', level: 88 },
+  { name: 'SQL', level: 80 },
+  { name: 'Google Analytics', level: 92 },
+  { name: 'TerminalFour', level: 90 },
+  { name: 'AWS', level: 75 },
+  { name: 'Docker', level: 72 },
+  { name: 'Git', level: 90 },
+  { name: 'Accessibility (WCAG)', level: 95 },
+]
 
 export const experience = [
   {
-    title: 'Frontend Engineer',
-    company: 'DeepReel',
-    location: 'Remote',
-    period: 'Jan 2025 - Present',
-    description: 'Building AI-powered video solutions',
+    title: 'Web Product Officer',
+    company: 'Queen Mary University of London',
+    location: 'London, United Kingdom',
+    period: 'May 2022 – Present',
+    description: 'Managed web support services and optimised 250+ production websites',
     highlights: [
-      'Replaced legacy UI with a sleek, responsive React-based interface, improving user engagement and visual consistency',
-      'Built granular event-tracking for video interactions, button clicks, and session flows, enabling actionable user behavior insights',
-      'Created dashboards with heatmaps, funnel charts, and session flows, empowering stakeholders to make informed product decisions',
-      'Collaborated with product, design, backend, and analytics teams to align UX enhancements with AI-powered video goals',
-      'Pioneered AI-native development with Claude Code: Built the Remotion Genie Editor featuring SVG masking, dynamic captions, and timeline-based video composition',
+      'Managed web support services handling 150+ tickets per month',
+      'Delivered 30+ website launches, SSL upgrades, HTTPS migrations, and template transfers',
+      'Maintained and optimised 250+ microsites ensuring accessibility, performance, and security compliance',
+      'Reduced page load times by 60% and image payloads by 70%, cutting server usage from 3TB to 1TB/month',
+      'Implemented search stemming to improve relevance and UX',
+      'Led a large-scale accessibility project addressing 500k+ Silktide issues, resolving them sprint-by-sprint',
+      'Consolidated 200+ Google Analytics properties into a single structured setup',
+      'Built 40+ Looker Studio dashboards for analytics visibility',
+      'Integrated Coursefinder and Springboard data into TerminalFour using event listeners',
+      'Implemented GDPR compliance via Termly consent banners',
+      'Optimised analytics, forms (100+ Jotforms), and tracking pipelines',
+      'Saved significant costs by replacing hybrid analytics agencies and tooling',
     ],
-    technologies: ['React', 'Next.js', 'Analytics', 'AWS', 'Node.js', 'Remotion', 'BAML'],
-    link: 'https://www.deepreel.com/',
-  },
-  {
-    title: 'Senior Front End Engineer',
-    company: 'LXME',
-    location: 'Mumbai, India',
-    period: 'Jun 2024 - Jan 2025',
-    description: 'Financial platform for women',
-    highlights: [
-      'Successfully upgraded React Native codebase from version 0.69 to 0.74, modernizing application architecture for 8,000+ daily active users',
-      'Implemented Sentry for crash management, reducing crash rate from 6% to 1.25% and enhancing app stability',
-      'Spearheaded \'Savings Challenge\', driving 30% of new SIP investments and contributing to business growth',
-      'Improved app responsiveness by resolving performance bottlenecks',
-    ],
-    technologies: ['React Native', 'Sentry', 'TypeScript'],
-    link: 'https://lxme.in',
-  },
-  {
-    title: 'Tech Cofounder',
-    company: 'Xade Finance',
-    location: 'Remote',
-    period: 'Jan 2024 - Dec 2025',
-    description: 'Crypto trading platform',
-    highlights: [
-      'Spearheaded MVP development for a crypto trading app, securing $500K in product launch readiness',
-      'Enabled seamless user interaction without managing private keys or gas fees',
-      'Designed deposit and trading features for multi-blockchain networks',
-      'Delivered Android and iOS apps with gas-less transaction models',
-    ],
-    technologies: ['React Native', 'Blockchain', 'WebSockets'],
+    technologies: ['TerminalFour', 'JavaScript', 'Python', 'SQL', 'Looker Studio', 'Google Analytics', 'Silktide', 'CDN/PXL'],
     link: null,
   },
   {
-    title: 'Core Software Engineer',
-    company: 'Rep3',
-    location: 'Bangalore, India',
-    period: 'Jan 2022 - Jun 2024',
-    description: 'Web3 community engagement platform',
+    title: 'Web Developer',
+    company: 'Pro Infotech',
+    location: 'Mumbai, India',
+    period: 'May 2020 – May 2021',
+    description: 'Delivered e-commerce, landing, and portfolio websites for multiple clients',
     highlights: [
-      'Contributed to the development of 5+ product offerings as a core developer',
-      'Implemented robust CI/CD pipelines for seamless feature deployment',
-      'Built a SaaS platform for compensating DAO contributors using cryptocurrency and NFTs',
-      'Developed a versatile NPM package for integrating protocol mechanisms into JavaScript frameworks',
-      'Achieved 250,000+ gas-less badges minted to incentivize crypto community engagement',
+      'Delivered e-commerce, landing, and portfolio websites for multiple clients',
+      'Built and deployed production projects including: anavrinstays.com, cartronics.co.in, jaarx.com, sabkuch2home.com',
+      'Worked closely with senior developers on custom features and integrations',
     ],
-    technologies: ['Node.js', 'Solidity', 'CI/CD', 'JavaScript'],
-    link: 'https://app.rep3.gg/',
-  },
-  {
-    title: 'React Native Engineer',
-    company: 'CryptoXpress',
-    location: 'Bangalore, India',
-    period: 'Sep 2021 - Jan 2022',
-    description: 'Cryptocurrency wallet and marketplace',
-    highlights: [
-      'Designed secure in-app lock screens for a cryptocurrency wallet',
-      'Developed a platform for real-time asset tracking and seamless minting',
-      'Enhanced responsiveness by migrating to WebSocket for real-time data',
-      'Enabled cryptocurrency payments for booking travel accommodations',
-    ],
-    technologies: ['React Native', 'WebSockets', 'Blockchain'],
+    technologies: ['React', 'JavaScript', 'HTML', 'CSS', 'Flask', 'MySQL'],
     link: null,
   },
   {
-    title: 'React Native Engineer',
-    company: 'Lokal Kitchen',
-    location: 'Mumbai, India',
-    period: 'Mar 2021 - Sep 2021',
-    description: 'Food delivery platform',
+    title: 'Web Developer Intern',
+    company: 'Talview',
+    location: 'Bangalore, India',
+    period: 'Jan 2020 – May 2020',
+    description: 'Built a Job Application Portal using Next.js and Semantic UI',
     highlights: [
-      'Modernized a legacy web application, improving scalability and user experience',
-      'Developed a dashboard for managing menus, operating hours, and service radius',
-      'Built a customer-facing app with chef profiles and personalized recommendations',
-      'Integrated Dunzo for seamless order delivery',
+      'Built a Job Application Portal using Next.js and Semantic UI',
+      'Developed automated job and interview management workflows',
+      'Implemented dashboard analytics to track user engagement',
     ],
-    technologies: ['React Native', 'Dunzo API'],
+    technologies: ['Next.js', 'Semantic UI', 'JavaScript'],
+    link: null,
+  },
+  {
+    title: 'Data Science Intern',
+    company: 'National University of Singapore',
+    location: 'Singapore',
+    period: 'Jun 2019 – Jul 2019',
+    description: 'Built a Keras-based cryptocurrency prediction model using Kafka, Spark, and Hadoop',
+    highlights: [
+      'Built a Keras-based cryptocurrency prediction model using Kafka, Spark, and Hadoop',
+      'Developed real-time Twitter Sentiment Analysis pipelines',
+      'Created data visualisation dashboards using Hive and Tableau',
+    ],
+    technologies: ['Python', 'Keras', 'Kafka', 'Spark', 'Hadoop', 'Hive', 'Tableau'],
     link: null,
   },
 ]
 
 export const projects = [
   {
-    title: 'Jaarx',
-    description: 'Comprehensive restaurant POS system for contactless ordering',
+    title: 'Smart Contract Audit Bot',
+    description: 'AI-powered Telegram bot for Ethereum smart contract security',
     highlights: [
-      'Developed customer, admin, and waiter/staff apps for streamlined operations',
-      'Implemented features like real-time order tracking and kitchen queue management',
-      'Designed QR code technology to enable contactless menu browsing and order placement',
+      'Integrated GPT-4 for automated vulnerability detection',
+      'Delivered AI-driven auditing for blockchain developers',
+      'Reduced manual review time significantly',
     ],
-    period: 'Jul 2020 - Jan 2021',
-    technologies: ['React Native', 'Node.js', 'Real-time Systems'],
+    period: '2024',
+    technologies: ['Python', 'GPT-4', 'Blockchain', 'Telegram API'],
+    image: '/projects/smart-contract-bot.png',
+    link: null,
+  },
+  {
+    title: 'University Web Platforms (QMUL)',
+    description: 'Enterprise-scale academic web ecosystem',
+    highlights: [
+      'Maintained and optimised 250+ websites',
+      'Accessibility uplift from 80% → 91% AA',
+      'Unified analytics across 200+ properties',
+    ],
+    period: '2022 - Present',
+    technologies: ['TerminalFour', 'JavaScript', 'Analytics', 'Accessibility'],
+    image: '/projects/qmul-platforms.png',
+    link: null,
+  },
+  {
+    title: 'Jaarx',
+    description: 'Restaurant POS and contactless ordering system',
+    highlights: [
+      'Built customer, admin, and staff applications',
+      'Implemented real-time order tracking and kitchen queues',
+      'Designed QR-based contactless ordering',
+    ],
+    period: '2020 - 2021',
+    technologies: ['React', 'Node.js', 'Real-time Systems'],
     image: '/projects/jaarx.png',
     link: null,
   },
   {
     title: 'Sabkuch2Home',
-    description: 'Rapid development of a hyperlocal grocery e-commerce platform during COVID-19 lockdown',
+    description: 'Hyperlocal grocery platform built during COVID-19',
     highlights: [
-      'Designed real-time inventory tracking and seamless checkout',
-      'Delivered the project within a single day',
-      'Built during COVID-19 lockdown, reaching around 3L-4L business at peak',
+      'Designed real-time inventory and checkout',
+      'Delivered MVP in a single day',
+      'Achieved ₹3–4L business at peak',
     ],
-    period: 'Apr 2020 - Jun 2020',
+    period: '2020',
     technologies: ['React', 'E-commerce', 'Real-time'],
     image: '/projects/sabkuch2home.png',
     link: null,
@@ -149,48 +193,48 @@ export const projects = [
 
 export const achievements = [
   {
-    title: 'Performance Optimization',
-    value: '40%',
-    description: 'Application performance improvement through scalable solutions',
+    title: 'Years Experience',
+    value: '7+',
+    description: 'Professional web development experience',
     icon: 'performance',
   },
   {
-    title: 'Client Satisfaction',
-    value: '95%',
-    description: 'Translating complex requirements into user-centric features',
-    icon: 'satisfaction',
+    title: 'Performance Improvement',
+    value: '60%',
+    description: 'Through CDN, image optimisation, and frontend improvements',
+    icon: 'performance',
   },
   {
-    title: 'Bug Reduction',
-    value: '30%',
-    description: 'Through mentorship and best practices adoption',
-    icon: 'bug',
-  },
-  {
-    title: 'Successful Projects',
-    value: '5+',
-    description: 'From concept to deployment in startup environments',
+    title: 'Websites Delivered',
+    value: '30+',
+    description: 'Website launches and migrations',
     icon: 'projects',
   },
   {
-    title: 'Gas-less Badges',
-    value: '250K+',
-    description: 'Minted for crypto community engagement',
-    icon: 'badge',
+    title: 'Sites Maintained',
+    value: '250+',
+    description: 'Across enterprise and academic environments',
+    icon: 'projects',
   },
   {
-    title: 'Daily Active Users',
-    value: '8K+',
-    description: 'Serving users on LXME platform',
+    title: 'Tickets / Month',
+    value: '150+',
+    description: 'Handled web support and production issues',
     icon: 'users',
+  },
+  {
+    title: 'Cost Savings',
+    value: '35k+',
+    description: 'Through optimisation, tooling, and process improvements',
+    icon: 'badge',
   },
 ]
 
 export const education = {
-  degree: 'Computer Science Engineering',
-  institution: 'Pillai College Of Engineering',
-  location: 'Mumbai, India',
-  year: '2017 - 2021',
+  degree: '',
+  institution: '',
+  location: '',
+  year: '',
 }
 
 export const navItems = [

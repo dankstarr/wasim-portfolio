@@ -4,25 +4,33 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from '@/hooks/useInView'
 import AnimatedText from '@/components/ui/AnimatedText'
+import { skillsWithLevels } from '@/data/portfolio'
 
-const allSkills = [
-  { name: 'React', category: 'frameworks', level: 95, color: '#61DAFB' },
-  { name: 'React Native', category: 'frameworks', level: 90, color: '#61DAFB' },
-  { name: 'Next.js', category: 'frameworks', level: 88, color: '#ffffff' },
-  { name: 'TypeScript', category: 'languages', level: 92, color: '#3178C6' },
-  { name: 'JavaScript', category: 'languages', level: 95, color: '#F7DF1E' },
-  { name: 'Node.js', category: 'frameworks', level: 85, color: '#339933' },
-  { name: 'Python', category: 'languages', level: 70, color: '#3776AB' },
-  { name: 'GraphQL', category: 'tools', level: 80, color: '#E10098' },
-  { name: 'WebSockets', category: 'tools', level: 85, color: '#6366f1' },
-  { name: 'Solidity', category: 'tools', level: 75, color: '#363636' },
-  { name: 'AWS', category: 'tools', level: 72, color: '#FF9900' },
-  { name: 'Git', category: 'tools', level: 90, color: '#F05032' },
-  { name: 'HTML', category: 'languages', level: 98, color: '#E34F26' },
-  { name: 'CSS', category: 'languages', level: 95, color: '#1572B6' },
-  { name: 'Sentry', category: 'tools', level: 80, color: '#362D59' },
-  { name: 'CI/CD', category: 'methodologies', level: 82, color: '#6366f1' },
-]
+// Map skills to categories and colors
+const skillColors: Record<string, string> = {
+  'React': '#61DAFB',
+  'Next.js': '#000000',
+  'JavaScript': '#F7DF1E',
+  'HTML': '#E34F26',
+  'CSS': '#1572B6',
+  'Python': '#3776AB',
+  'Flask': '#000000',
+  'SQL': '#336791',
+  'Google Analytics': '#F4B400',
+  'TerminalFour': '#6366f1',
+  'AWS': '#FF9900',
+  'Docker': '#2496ED',
+  'Git': '#F05032',
+  'Accessibility (WCAG)': '#005F9E',
+}
+
+const allSkills = skillsWithLevels.map(skill => ({
+  name: skill.name,
+  category: skill.name.includes('React') || skill.name.includes('Next.js') || skill.name.includes('Flask') ? 'frameworks' :
+           skill.name.includes('JavaScript') || skill.name.includes('HTML') || skill.name.includes('CSS') || skill.name.includes('Python') || skill.name.includes('SQL') ? 'languages' : 'tools',
+  level: skill.level,
+  color: skillColors[skill.name] || '#6366f1',
+}))
 
 const categories = [
   { id: 'all', label: 'All' },
@@ -41,60 +49,68 @@ export default function Skills() {
     : allSkills.filter((s) => s.category === activeCategory)
 
   return (
-    <section id="skills" className="relative py-20 md:py-32 overflow-hidden">
+    <section id="skills" className="relative py-16 md:py-24 overflow-hidden" aria-label="Skills section">
       {/* Background orbs - hidden on mobile for performance */}
       <div className="absolute inset-0 overflow-hidden hidden md:block">
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-2xl"
           animate={{
             x: [0, 50, 0],
             y: [0, -30, 0],
           }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+          style={{ willChange: 'transform' }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-2xl"
           animate={{
             x: [0, -50, 0],
             y: [0, 30, 0],
           }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+          style={{ willChange: 'transform' }}
         />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-10 md:mb-16">
+        <div ref={titleRef} className="text-center mb-12 md:mb-16">
           <motion.span
             className="text-accent font-mono text-xs md:text-sm tracking-wider uppercase mb-3 md:mb-4 block"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
+            style={{ willChange: 'transform, opacity' }}
           >
             Technical Expertise
           </motion.span>
-          <AnimatedText
-            text="Skills & Technologies"
-            className="text-3xl md:text-5xl lg:text-6xl font-display font-bold"
-          />
+          <h2>
+            <AnimatedText
+              text="Skills & Technologies"
+              className="text-3xl md:text-4xl lg:text-5xl font-display font-bold select-text"
+            />
+          </h2>
         </div>
 
         {/* Category Filter */}
         <motion.div
-          className="flex flex-wrap justify-center gap-2 mb-8 md:mb-16"
+          className="flex flex-wrap justify-center gap-2 mb-6 md:mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={titleInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          style={{ willChange: 'transform, opacity' }}
         >
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`px-4 md:px-6 py-2 text-sm md:text-base rounded-full font-medium transition-all ${
+              className={`px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-full font-medium transition-all duration-300 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary ${
                 activeCategory === category.id
                   ? 'bg-accent text-white'
-                  : 'glass text-text-secondary hover:text-white'
+                  : 'glass text-text-secondary hover:text-white hover:bg-white/10'
               }`}
+              aria-pressed={activeCategory === category.id}
+              aria-label={`Filter skills by ${category.label}`}
             >
               {category.label}
             </button>
@@ -102,9 +118,9 @@ export default function Skills() {
         </motion.div>
 
         {/* Skills Visualization */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
           {/* Skill Orbs - Hidden on mobile/tablet */}
-          <div className="relative h-[400px] hidden lg:block">
+          <div className="relative h-[300px] hidden lg:flex items-center justify-center">
             <SkillOrbitVisualization
               skills={filteredSkills}
               hoveredSkill={hoveredSkill}
@@ -112,8 +128,12 @@ export default function Skills() {
             />
           </div>
 
-          {/* Skill List - Full width on mobile */}
-          <div className="space-y-3 md:space-y-4 lg:col-span-1">
+          {/* Skills Grid - Two Columns */}
+          <div
+            className="grid md:grid-cols-2 gap-3 md:gap-4"
+            role="list"
+            aria-label="Skills proficiency list"
+          >
             <AnimatePresence mode="popLayout">
               {filteredSkills.map((skill, index) => (
                 <SkillBar
@@ -163,7 +183,7 @@ function SkillOrbitVisualization({
   const centerY = dimensions.height / 2
 
   return (
-    <div ref={containerRef} className="absolute inset-0">
+    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center">
       {/* Orbit rings */}
       {[1, 2, 3].map((ring) => (
         <motion.div
@@ -174,9 +194,10 @@ function SkillOrbitVisualization({
             height: ring * 120,
             left: centerX - (ring * 60),
             top: centerY - (ring * 60),
+            willChange: 'transform',
           }}
           animate={{ rotate: ring % 2 === 0 ? 360 : -360 }}
-          transition={{ duration: 60 + ring * 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 40 + ring * 15, repeat: Infinity, ease: 'linear' }}
         />
       ))}
 
@@ -288,28 +309,32 @@ function SkillBar({
   return (
     <motion.div
       ref={ref}
-      className={`glass rounded-xl p-3 md:p-4 transition-all cursor-pointer ${
-        isHovered ? 'ring-2 ring-accent' : ''
+      className={`glass rounded-xl p-3 md:p-4 transition-all duration-300 cursor-pointer focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-primary ${
+        isHovered ? 'ring-2 ring-accent/50 scale-[1.02]' : ''
       }`}
-      initial={{ opacity: 0, x: 30 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      exit={{ opacity: 0, x: -30 }}
-      transition={{ delay: index * 0.03 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ delay: index * 0.02, duration: 0.3 }}
       onMouseEnter={() => onHover(skill.name)}
       onMouseLeave={() => onHover(null)}
       layout
+      style={{ willChange: 'transform, opacity' }}
+      tabIndex={0}
+      role="listitem"
+      aria-label={`${skill.name} - ${skill.level}% proficiency`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center gap-2">
           <div
-            className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0"
+            className="w-2 h-2 rounded-full flex-shrink-0"
             style={{ backgroundColor: skill.color }}
           />
-          <span className="font-medium text-white text-sm md:text-base">{skill.name}</span>
+          <span className="font-medium text-white text-sm">{skill.name}</span>
         </div>
-        <span className="text-accent font-mono text-xs md:text-sm">{skill.level}%</span>
+        <span className="text-accent font-mono text-xs">{skill.level}%</span>
       </div>
-      <div className="h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{
@@ -317,7 +342,7 @@ function SkillBar({
           }}
           initial={{ width: 0 }}
           animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
-          transition={{ duration: 0.8, delay: index * 0.03, ease: 'easeOut' }}
+          transition={{ duration: 0.6, delay: index * 0.02, ease: 'easeOut' }}
         />
       </div>
     </motion.div>

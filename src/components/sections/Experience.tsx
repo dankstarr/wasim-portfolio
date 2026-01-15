@@ -22,26 +22,30 @@ export default function Experience() {
     <section
       id="experience"
       ref={containerRef}
-      className="relative py-32 overflow-hidden"
+      className="relative py-20 md:py-24 overflow-hidden"
+      aria-label="Experience section"
     >
       {/* Background */}
       <div className="absolute inset-0 dot-pattern opacity-30" />
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Title */}
-        <div ref={titleRef} className="text-center mb-20">
+        <div ref={titleRef} className="text-center mb-12 md:mb-16">
           <motion.span
             className="text-accent font-mono text-sm tracking-wider uppercase mb-4 block"
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
+            style={{ willChange: 'transform, opacity' }}
           >
             Career Journey
           </motion.span>
-          <AnimatedText
-            text="Work Experience"
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold"
-          />
+          <h2>
+            <AnimatedText
+              text="Work Experience"
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold select-text"
+            />
+          </h2>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8">
@@ -52,20 +56,23 @@ export default function Experience() {
                 <motion.button
                   key={index}
                   onClick={() => setActiveIndex(index)}
-                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${
+                  className={`w-full text-left p-5 rounded-2xl transition-all duration-300 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary ${
                     activeIndex === index
-                      ? 'bg-accent/20 border-l-4 border-accent'
-                      : 'hover:bg-white/5 border-l-4 border-transparent'
+                      ? 'bg-accent/20 border-l-4 border-accent glass-strong text-white'
+                      : 'hover:bg-white/5 hover:text-white border-l-4 border-transparent glass text-text-secondary'
                   }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ x: 5 }}
+                  aria-label={`Select ${job.company} experience`}
+                  aria-pressed={activeIndex === index}
+                  aria-controls={`job-details-${index}`}
                 >
-                  <div className="font-display font-semibold text-white">
+                  <div className="font-display font-semibold">
                     {job.company}
                   </div>
-                  <div className="text-text-secondary text-sm">{job.title}</div>
+                  <div className="text-sm opacity-90">{job.title}</div>
                   <div className="text-accent text-xs font-mono mt-1">{job.period}</div>
                 </motion.button>
               ))}
@@ -75,16 +82,20 @@ export default function Experience() {
           {/* Job Details */}
           <div className="lg:col-span-8">
             <AnimatePresence mode="wait">
-              <motion.div
+              <motion.article
                 key={activeIndex}
+                id={`job-details-${activeIndex}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="glass rounded-2xl p-8"
+                className="glass rounded-2xl p-8 md:p-10"
+                role="article"
+                aria-live="polite"
+                aria-atomic="true"
               >
                 {/* Header */}
-                <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <header className="flex flex-wrap items-start justify-between gap-4 mb-6">
                   <div>
                     <h3 className="text-2xl font-display font-bold text-white mb-1">
                       {experience[activeIndex].title}
@@ -113,10 +124,10 @@ export default function Experience() {
                   <div className="px-3 py-1 rounded-full bg-accent/20 text-accent text-sm font-mono">
                     {experience[activeIndex].period}
                   </div>
-                </div>
+                </header>
 
                 {/* Description */}
-                <p className="text-text-secondary mb-6">
+                <p className="text-text-secondary mb-6 select-text leading-relaxed">
                   {experience[activeIndex].description}
                 </p>
 
@@ -135,7 +146,7 @@ export default function Experience() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </span>
-                      <p className="text-text-secondary">{highlight}</p>
+                      <p className="text-text-secondary select-text leading-relaxed">{highlight}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -149,7 +160,7 @@ export default function Experience() {
                     {experience[activeIndex].technologies.map((tech, idx) => (
                       <motion.span
                         key={idx}
-                        className="px-3 py-1 rounded-full bg-white/5 text-white text-sm border border-white/10 hover:border-accent/50 hover:bg-accent/10 transition-colors"
+                        className="px-3 py-1.5 rounded-full bg-white/5 text-white text-sm font-medium border border-white/10 hover:border-accent/50 hover:bg-accent/10 transition-all duration-200"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: idx * 0.05 }}
@@ -159,7 +170,7 @@ export default function Experience() {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </motion.article>
             </AnimatePresence>
           </div>
         </div>
@@ -196,7 +207,7 @@ function ExperienceCard({
       {/* Timeline dot */}
       <div className="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-accent border-4 border-primary" />
 
-      <div className="glass rounded-xl p-6">
+      <div className="glass rounded-2xl p-6 md:p-8">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <h3 className="font-display font-bold text-white">{job.title}</h3>
@@ -210,6 +221,7 @@ function ExperienceCard({
         <AnimatePresence>
           {isExpanded && (
             <motion.div
+              id={`job-details-mobile-${index}`}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -218,10 +230,10 @@ function ExperienceCard({
             >
               <ul className="space-y-2 mb-4">
                 {job.highlights.map((highlight, idx) => (
-                  <li key={idx} className="text-text-secondary text-sm flex gap-2">
-                    <span className="text-accent">•</span>
-                    {highlight}
-                  </li>
+                    <li key={idx} className="text-text-secondary text-sm flex gap-2 select-text">
+                      <span className="text-accent">•</span>
+                      {highlight}
+                    </li>
                 ))}
               </ul>
               <div className="flex flex-wrap gap-2">
@@ -240,7 +252,9 @@ function ExperienceCard({
 
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-4 text-accent text-sm flex items-center gap-1 hover:underline"
+          className="mt-4 text-accent text-sm flex items-center gap-1 hover:underline min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded-lg px-2"
+          aria-expanded={isExpanded}
+          aria-controls={`job-details-mobile-${index}`}
         >
           {isExpanded ? 'Show less' : 'Show more'}
           <motion.svg
@@ -249,6 +263,7 @@ function ExperienceCard({
             viewBox="0 0 24 24"
             stroke="currentColor"
             animate={{ rotate: isExpanded ? 180 : 0 }}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </motion.svg>

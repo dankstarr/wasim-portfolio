@@ -49,7 +49,7 @@ export default function AnimatedText({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: type === 'chars' ? 0.02 : 0.08,
+        staggerChildren: type === 'chars' ? 0.01 : 0.04,
         delayChildren: delay,
       },
     },
@@ -67,8 +67,9 @@ export default function AnimatedText({
       rotateX: 0,
       transition: {
         type: 'spring',
-        damping: 20,
-        stiffness: 100,
+        damping: 25,
+        stiffness: 150,
+        duration: 0.3,
       },
     },
   }
@@ -82,13 +83,13 @@ export default function AnimatedText({
       animate={controls}
     >
       <span className="sr-only">{text}</span>
-      <span aria-hidden className="inline-flex flex-wrap">
+      <span className="inline select-text">
         {elements.map((element, index) => (
           <motion.span
             key={index}
             variants={child}
-            className="inline-block"
-            style={{ transformOrigin: 'bottom', perspective: '1000px' }}
+            className="inline"
+            style={{ transformOrigin: 'bottom', perspective: '1000px', willChange: 'transform, opacity' }}
           >
             {element}
             {type === 'words' && index < elements.length - 1 && '\u00A0'}

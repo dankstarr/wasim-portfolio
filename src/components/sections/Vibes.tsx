@@ -7,7 +7,10 @@ import { Canvas } from '@react-three/fiber'
 import YouTube, { YouTubePlayer, YouTubeEvent } from 'react-youtube'
 import { VinylData, vinylCollection } from '@/components/three/VibesScene'
 
-const VibesScene = dynamic(() => import('@/components/three/VibesScene'), {
+const VibesScene = dynamic(() => import('@/components/three/VibesScene').catch((error) => {
+  console.error('Failed to load VibesScene:', error)
+  return { default: () => null }
+}), {
   ssr: false,
   loading: () => null,
 })
@@ -25,20 +28,28 @@ export default function Vibes() {
 
   // Handle YouTube player state changes
   const handlePlayerStateChange = useCallback((event: YouTubeEvent) => {
-    // 1 = playing, 2 = paused, 0 = ended
-    if (event.data === 1) {
-      setIsPlaying(true)
-    } else if (event.data === 2 || event.data === 0) {
-      setIsPlaying(false)
+    try {
+      // 1 = playing, 2 = paused, 0 = ended
+      if (event.data === 1) {
+        setIsPlaying(true)
+      } else if (event.data === 2 || event.data === 0) {
+        setIsPlaying(false)
+      }
+    } catch (error) {
+      console.error('YouTube player state change error:', error)
     }
   }, [])
 
   // Play/pause toggle
   const togglePlayPause = useCallback(() => {
-    if (isPlaying) {
-      playerRef.current?.pauseVideo()
-    } else {
-      playerRef.current?.playVideo()
+    try {
+      if (isPlaying) {
+        playerRef.current?.pauseVideo()
+      } else {
+        playerRef.current?.playVideo()
+      }
+    } catch (error) {
+      console.error('Play/pause error:', error)
     }
   }, [isPlaying])
 
@@ -111,7 +122,7 @@ export default function Vibes() {
           {/* Play/Pause Button */}
           <motion.button
             onClick={togglePlayPause}
-            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center backdrop-blur-md transition-all border-2"
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center backdrop-blur-md transition-all border-2 min-w-[64px] min-h-[64px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
             style={{
               backgroundColor: `${currentVinyl.color}15`,
               borderColor: `${currentVinyl.color}50`,
@@ -124,6 +135,7 @@ export default function Vibes() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300 }}
+            aria-label={isPlaying ? 'Pause music' : 'Play music'}
           >
             <AnimatePresence mode="wait">
               {isPlaying ? (
@@ -180,8 +192,9 @@ export default function Vibes() {
           <div className="flex items-center gap-4 sm:gap-6 mt-4 sm:mt-6">
             <motion.button
               onClick={playPrev}
-              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10 active:bg-white/20"
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all duration-300 rounded-full hover:bg-white/10 active:bg-white/20 min-w-[40px] min-h-[40px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
               whileTap={{ scale: 0.9 }}
+              aria-label="Previous track"
             >
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
@@ -190,8 +203,9 @@ export default function Vibes() {
 
             <motion.button
               onClick={playNext}
-              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all rounded-full hover:bg-white/10 active:bg-white/20"
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-text-secondary hover:text-white transition-all duration-300 rounded-full hover:bg-white/10 active:bg-white/20 min-w-[40px] min-h-[40px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
               whileTap={{ scale: 0.9 }}
+              aria-label="Next track"
             >
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
@@ -202,7 +216,7 @@ export default function Vibes() {
           {/* Feel Lucky Button */}
           <motion.button
             onClick={feelLucky}
-            className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2 transition-all"
+            className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2 transition-all min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
             style={{
               background: `linear-gradient(135deg, ${currentVinyl.color}40, ${currentVinyl.color}20)`,
               border: `1px solid ${currentVinyl.color}60`,
@@ -212,6 +226,7 @@ export default function Vibes() {
               boxShadow: `0 0 30px ${currentVinyl.color}40`,
             }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Play random track"
           >
             <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -225,10 +240,10 @@ export default function Vibes() {
               <motion.button
                 key={vinyl.id}
                 onClick={() => changeTrack(vinyl, true)}
-                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium transition-all flex items-center gap-1 sm:gap-1.5 ${
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium transition-all duration-300 flex items-center gap-1 sm:gap-1.5 min-h-[32px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary ${
                   currentVinyl.id === vinyl.id
                     ? 'text-white'
-                    : 'text-text-secondary hover:text-white'
+                    : 'text-text-secondary hover:text-white hover:bg-white/10'
                 }`}
                 style={{
                   backgroundColor: currentVinyl.id === vinyl.id
@@ -240,6 +255,8 @@ export default function Vibes() {
                     : 'rgba(255,255,255,0.1)',
                 }}
                 whileTap={{ scale: 0.97 }}
+                aria-label={`Play ${vinyl.title} by ${vinyl.artist}`}
+                aria-pressed={currentVinyl.id === vinyl.id}
               >
                 {currentVinyl.id === vinyl.id && isPlaying && (
                   <span className="flex items-end gap-0.5 h-2.5 sm:h-3">
@@ -273,7 +290,7 @@ export default function Vibes() {
       {/* Section Label */}
       <div className="absolute top-4 sm:top-8 inset-x-0 z-10 flex justify-center pointer-events-none">
         <motion.p
-          className="text-text-secondary/30 text-[10px] sm:text-xs font-mono tracking-widest uppercase"
+          className="text-text-secondary/60 text-[10px] sm:text-xs font-mono tracking-widest uppercase"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
