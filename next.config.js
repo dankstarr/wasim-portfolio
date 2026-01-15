@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  // Set basePath if deploying to GitHub Pages with a repository name
+  // For username.github.io, leave basePath empty or undefined
+  // For username.github.io/repo-name, set basePath to '/repo-name'
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
   transpilePackages: ['three'],
   images: {
     unoptimized: true,
